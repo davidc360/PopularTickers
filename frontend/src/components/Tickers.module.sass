@@ -1,0 +1,58 @@
+.ctn
+    width: 500px
+    display: flex
+    flex-direction: column
+    margin: 2em auto
+
+.left
+    text-align: left
+    border-right: 1px solid white 
+    padding-right: 6px
+
+.title
+    display: flex
+    justify-content: space-between
+    align-items: flex-start
+    margin-bottom: 0.5em
+    border-bottom: 1px solid white
+
+.sub
+    font-size: 37px
+    line-height: 1px
+
+.lastUpdated
+    text-align: right
+    line-height: 9px
+
+.table
+    margin: 0 auto
+    & th
+        font-size: 90%
+    & td
+        font-size: 80%
+
+.tooltip
+    align-self: flex-end
+    align-text: right
+    display: inline-block
+
+    &:hover
+        cursor: pointer
+
+.tooltext
+    text-align: initial
+    color: #fff
+    text-shadow: none
+    padding: 0.5em 1em
+    background-color: black
+    white-space: pre-wrap
+    position: fixed
+    margin-left: -0.5em
+    max-width: 250px
+
+.tickerName
+    &:hover
+        cursor: pointer
+        color: gray
+    &:active
+        color: white
