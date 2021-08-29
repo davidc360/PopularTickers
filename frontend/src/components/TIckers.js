@@ -154,6 +154,7 @@ function ToolTip({ children, tooltext, classNames, childClassNames }) {
 }
 
 function TickerRow({ ticker, count, pos_sent, pos_sent_cnt=0, neg_sent, neg_sent_cnt=0, neut_sent_cnt=0}) {
+    const [show, setShow] = useState(true)
     let total_sent_cnt = pos_sent_cnt + neg_sent_cnt + neut_sent_cnt
     const pos_strength = pos_sent && (pos_sent*100).toFixed(0)
     const neg_strength = neg_sent && (neg_sent*100).toFixed(0)
@@ -167,7 +168,9 @@ function TickerRow({ ticker, count, pos_sent, pos_sent_cnt=0, neg_sent, neg_sent
             ticker,
             secret: blacklistSecret
         })
+        setShow(false)
     }
+    if(!show) return null
     return (
         <tr>
             <td className={`${styles.left}`} onClick={blacklistTicker}>
