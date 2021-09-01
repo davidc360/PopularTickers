@@ -76,6 +76,8 @@ def get_tickers_from_sub(subreddit_name):
                             continue
                         if not word.isalpha():
                             continue
+                        if len(word) > 6:
+                            continue
                         if word not in ticker_list:
                             continue
                         new_words.append(word)
