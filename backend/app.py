@@ -14,6 +14,7 @@ from textblob import TextBlob
 from flask import Flask, Response, request
 from flask_cors import CORS
 from flask_pymongo import PyMongo
+from flask_socketio import SocketIO, send, emit
 
 #dev
 import json
@@ -27,6 +28,7 @@ mongo_URI = os.environ.get("mongo_URI")
 print(mongo_URI)
 app.config["MONGO_URI"] =  mongo_URI
 mongo = PyMongo(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 reddit = praw.Reddit(
      client_id=os.environ.get("client_id"),
@@ -122,7 +124,7 @@ def get_tickers_from_sub(subreddit_name):
             if subreddit['tickers'][ticker]['count'] < 2:
                 subreddit['tickers'].pop(ticker)
 
-        subreddit['last_updated'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        subreddit['last_updated'] = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         mongo.db.subreddits.delete_one({'subreddit': subreddit_name})
         mongo.db.subreddits.insert_one(subreddit)
 
@@ -154,5 +156,11 @@ def blacklist_ticker_route():
     except:
         return "Error", 500
 
+@socketio.on('connect')
+def connected():
+    emit('connection response', {
+        'data': 'yoo'
+    })
+
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)

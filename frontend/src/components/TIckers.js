@@ -66,6 +66,7 @@ function TicksFromSub({ subreddit }) {
     const noTickers = (
         <div>Didn't find enough stocks being discussed.</div>
     )
+
     const tickerTable = (
         <table className={styles.table}>
             <thead>
@@ -111,7 +112,7 @@ function TicksFromSub({ subreddit }) {
     )
     const loader = (
         <>
-        <div class={styles.left}>{'Scraping data from r/' + subreddit + '... estimated time is  <1 minute.'}</div>
+        <div class={styles.left}>{'Scraping data from r/' + subreddit + '... it can take a minute'}</div>
         <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
         </>
     )
@@ -124,7 +125,7 @@ function TicksFromSub({ subreddit }) {
     )
 }
 
-function ToolTip({ children, tooltext, classNames, childClassNames }) {
+function ToolTip({ children, tooltext, className, childClassNames, onClick }) {
     const [pos, setPos] = useState()
     const [showChild, setShow] = useState(false)
     function updatePos(e) {
@@ -136,9 +137,10 @@ function ToolTip({ children, tooltext, classNames, childClassNames }) {
     }
     return (
         <div
-            className={`${classNames} ${styles.tooltip}`}
+            className={`${className} ${styles.tooltip}`}
             onMouseMove={updatePos}
-            onMouseLeave={ () => setShow(false) }
+            onMouseLeave={() => setShow(false)}
+            onClick={onClick}
         >
             {children}
             {showChild && (
@@ -170,13 +172,17 @@ function TickerRow({ ticker, count, pos_sent, pos_sent_cnt=0, neg_sent, neg_sent
         })
         setShow(false)
     }
+
+    function googleTicker() {
+        window.open("https://www.google.com/search?q=" + ticker,'_blank')
+    }
     if(!show) return null
     return (
         <tr>
-            <td className={`${styles.left}`} onClick={blacklistTicker}>
+            <td className={`${styles.left}`} onClick={googleTicker}>
                 {
                     blacklistSecret ?
-                        <ToolTip tooltext={'Blacklist this ticker'} >
+                        <ToolTip tooltext={'Open chart'} >
                             {ticker}
                         </ToolTip>
                         : ticker
@@ -188,6 +194,12 @@ function TickerRow({ ticker, count, pos_sent, pos_sent_cnt=0, neg_sent, neg_sent
             <td>{sent_percent(pos_sent_cnt) || "0%"}</td>
             <td>{sent_percent(neut_sent_cnt) || "0%"}</td>
             <td>{sent_percent(neg_sent_cnt) || "0%"}</td>
+            {
+                    blacklistSecret &&
+                        <ToolTip tooltext={'Blacklist this ticker'} className={styles.remove} onClick={blacklistTicker}>
+                            X
+                        </ToolTip>
+            }
         </tr>
     )
 }

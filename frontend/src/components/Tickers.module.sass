@@ -28,6 +28,8 @@
     margin: 0 auto
     & th
         font-size: 90%
+    & tr
+        position: relative
     & td
         font-size: 80%
 
@@ -38,6 +40,10 @@
 
     &:hover
         cursor: pointer
+        color: gray
+
+    &:active
+        color: white
 
 .tooltext
     text-align: initial
@@ -49,10 +55,17 @@
     position: fixed
     margin-left: -0.5em
     max-width: 250px
+    z-index: 1000
 
 .tickerName
     &:hover
         cursor: pointer
         color: gray
+
     &:active
         color: white
+
+.remove
+    position: absolute
+    right: -1.5em
+

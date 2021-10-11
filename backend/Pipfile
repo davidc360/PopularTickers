@@ -16,6 +16,7 @@ dnspython = "*"
 flask-cors = "*"
 requests = "*"
 python-dotenv = "*"
+flask-socketio = "*"
 
 [requires]
 python_version = "3.8"

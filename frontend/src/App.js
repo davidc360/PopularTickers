@@ -3,7 +3,8 @@ import './App.css';
 
 import Nav from './components/Nav'
 import About from './components/About'
-import Home from './components/TIckers'
+import Home from './components/Tickers'
+import Socket from './components/Socket'
 import Contact from './components/Contact'
 import EnterSecret from './components/EnterSecret'
 
@@ -15,7 +16,7 @@ function App() {
                 <div className="App">
                 <Nav />
                 <Switch>    
-                    <Route exact path='/' component={Home} />
+                    <Route exact path='/' component={Socket} />
                     <Route path='/about' component={About} />
                     <Route path='/contact' component={Contact} />
                     <Route path='/code' component={EnterSecret} />
