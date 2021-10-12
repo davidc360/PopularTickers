@@ -8,7 +8,7 @@ from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
 from tickers import *
-from reddit import reddit
+from reddit import reddit, subreddits_to_monitor
 
 load_dotenv()
 
@@ -30,7 +30,7 @@ def flask_thread():
     socketio.run(app)
 
 def reddit_thread():
-    subreddit = reddit.subreddit('wallstreetbets')
+    subreddit = reddit.subreddit('+'.join(subreddits_to_monitor))
     comment_stream = subreddit.stream.comments(pause_after=-1, skip_existing=True)
     submission_stream = subreddit.stream.submissions(pause_after=-1, skip_existing=True)
     while True:
@@ -41,7 +41,8 @@ def reddit_thread():
             print('comment')
             socketio.emit('comment', {
                 'body': comment.body,
-                'author': comment.author.name
+                'author': comment.author.name,
+                'subreddit': comment.subreddit.display_name
             })
         for submission in submission_stream:
             if submission is None:
@@ -51,9 +52,11 @@ def reddit_thread():
             socketio.emit('post', {
                 'title': submission.title,
                 'body': submission.selftext,
-                'author': submission.author.name
+                'author': submission.author.name,
+                'subreddit': submission.subreddit.display_name
             })
 
 if __name__ == '__main__':
+    print('+'.join(subreddits_to_monitor))
     threading.Thread(target=flask_thread).start()
     threading.Thread(target=reddit_thread).start()

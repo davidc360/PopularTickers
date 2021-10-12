@@ -35,11 +35,12 @@ function App() {
     );
 }
 
-function RedditPost({ title, body, author }) {
+function RedditPost({ title, body, author, subreddit }) {
     return (
         <div key={body}>
             <div>{title}</div>
             <div>{body}</div>
+            <div>r/{subreddit}</div>
             <div>u/{author}</div>
         </div>
     )
