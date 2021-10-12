@@ -4,6 +4,10 @@ body{
     color: white;
 }
 
+a {
+    text-decoration: none;
+}
+
 a, a:focus, a:active {
     /* text-decoration: none; */
     color: inherit;

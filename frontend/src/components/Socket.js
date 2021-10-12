@@ -50,16 +50,17 @@ function App() {
 }
 
 function RedditPost({ title, body, author, subreddit, link }) {
-    const threadType = title === undefined ? 'comment' : 'post'
+    console.log(title)
+    const threadType = title === null ? 'comment' : 'post'
 
     return (
         <div key={body} className='thread'>
             <div className='threadTitle'>{title}</div>
             <div className='threadBody'>{body}</div>
             <div className="threadInfo">
-                <span>{threadType}</span>
-                <span className='threadSub'>r/{subreddit}</span>
-                <span className='threadAuthor'>u/{author}</span>
+                <a href={'https://www.reddit.com'+link} target='_blank'> <span>{threadType}</span> </a>
+                <a href={'https://www.reddit.com/r/'+subreddit} target='_blank'> <span className='threadSub'>r/{subreddit}</span> </a>
+                <a href={'https://www.reddit.com/user/'+author} target='_blank'> <span className='threadAuthor'>u/{author}</span> </a>
             </div>
         </div>
     )
