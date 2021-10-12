@@ -3,27 +3,46 @@ import io from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:5000";
 
 function App() {
-  const [text, setText] = useState("");
+    const [threads, setThreads] = useState([])
 
-  useEffect(() => {
-    const socket = io(ENDPOINT);
+    useEffect(() => {
+        const socket = io(ENDPOINT);
 
-    console.log(socket.id)
-    socket.on("connect", data => {
-        // setText('connected')
-    });
+        socket.on("post", data => {
+            setThreads(threads => [data, ...threads])
+        })
+        
+        socket.on("comment", data => {
+            setThreads(threads => [data, ...threads])
+        })
 
-    socket.on("connection response", data => {
-       setText(data.data)
-    })
-  }, []);
+    }, []);
 
-  return (
-      <p>
-          {text}
-      </p>
-    
-  );
+    useEffect(() => {
+        console.log(threads)
+    }, [threads])
+
+    // Turn thread informations into thread elements
+    const postElements = threads.map(thread => (
+        RedditPost(thread)
+    ))
+
+    return (
+        <div>
+            {postElements}
+        </div>
+        
+    );
+}
+
+function RedditPost({ title, body, author }) {
+    return (
+        <div key={body}>
+            <div>{title}</div>
+            <div>{body}</div>
+            <div>u/{author}</div>
+        </div>
+    )
 }
 
 export default App;

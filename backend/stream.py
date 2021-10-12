@@ -22,8 +22,8 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 
 @socketio.on('connect')
 def connected():
-    emit('connection response', {
-        'data': 'yoo'
+    emit('message', {
+        'message': 'hahaha'
     })
 
 def flask_thread():
@@ -39,11 +39,20 @@ def reddit_thread():
                 break
             # print(comment.body)
             print('comment')
+            socketio.emit('comment', {
+                'body': comment.body,
+                'author': comment.author.name
+            })
         for submission in submission_stream:
             if submission is None:
                 break
             # print(submission.title)
             print('post')
+            socketio.emit('post', {
+                'title': submission.title,
+                'body': submission.selftext,
+                'author': submission.author.name
+            })
 
 if __name__ == '__main__':
     threading.Thread(target=flask_thread).start()
