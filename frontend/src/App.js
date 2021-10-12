@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 
 import Nav from './components/Nav'
@@ -8,7 +7,7 @@ import Socket from './components/Socket'
 import Contact from './components/Contact'
 import EnterSecret from './components/EnterSecret'
 
-import { BrowserRouter, Route, Switch, useParams } from 'react-router-dom'
+import { BrowserRouter, Route, Switch  } from 'react-router-dom'
 
 function App() {
     return (

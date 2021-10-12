@@ -2,7 +2,6 @@ body{
     /* background-color: #282c34; */
     background-color: #2F3340;
     color: white;
-    text-align: center;
 }
 
 a, a:focus, a:active {
@@ -74,41 +73,4 @@ a:hover{
 .submit:hover{
     cursor: pointer;
     color: gray
-}
-
-.articles{
-    width: 100%;
-    margin-top: 2em;
-    display: flex;
-    justify-content: center;
-    padding: 2em 0;
-    flex-wrap: wrap;
-}
-
-.article{
-    width: 400px;
-    margin: 0 1em;
-    margin-bottom: 3em;
-    text-decoration: none;
-    text-align: left;
-    padding-bottom: 1em;
-    border-bottom: 2px solid #bfbfbf;
-}
-
-h3, p{
-    margin: 0.6em 0;
-}
-
-.article:hover{
-    cursor: pointer;
-    background-color: gray;
-    color: white;
-}
-
-.article:hover img{
-    opacity: 0.5
-}
-
-.article img{
-    width: 100%;
 }

@@ -1,3 +1,4 @@
+import './Nav.sass'
 import React, { useEffect } from 'react'
 
 import { Link } from 'react-router-dom'
@@ -5,7 +6,7 @@ import { Link } from 'react-router-dom'
 export default function () {
    
     return (
-        <nav>
+        <nav className='nav'>
             <h1 className='logo'> Popular Tickers! </h1>
             <ul className='nav-links'>
                 <Link to={'/'}>
