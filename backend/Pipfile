@@ -7,16 +7,15 @@ verify_ssl = true
 
 [packages]
 praw = "*"
-yfinance = "*"
 flask = "*"
 flask-pymongo = "*"
 textblob = "*"
 gunicorn = "*"
 dnspython = "*"
 flask-cors = "*"
-requests = "*"
 python-dotenv = "*"
 flask-socketio = "*"
+requests = "*"
 
 [requires]
 python_version = "3.8"

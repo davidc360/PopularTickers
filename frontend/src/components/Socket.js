@@ -10,7 +10,7 @@ function App() {
 
     console.log(socket.id)
     socket.on("connect", data => {
-        setText('connected')
+        // setText('connected')
     });
 
     socket.on("connection response", data => {

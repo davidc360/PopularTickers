@@ -1,12 +1,10 @@
 import string
 from datetime import datetime
-import requests
 import os
 from dotenv import load_dotenv
 
 from tickers import *
 
-import yfinance as yf
 import praw
 
 from textblob import TextBlob
@@ -16,6 +14,8 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
+import redis
+from rq import Queue
 #dev
 import json
 
@@ -162,5 +162,32 @@ def connected():
         'data': 'yoo'
     })
 
+@app.before_first_request
+def run_before():
+    print('running before request')
+
+from make_celery import make_celery
+app.config.update(
+    CELERY_BROKER_URL='redis://localhost:6379',
+    CELERY_RESULT_BACKEND='redis://localhost:6379'
+)
+celery = make_celery(app)
+
+
 if __name__ == '__main__':
     socketio.run(app)
+
+    # subreddit = reddit.subreddit('wallstreetbets')
+    # comment_stream = subreddit.stream.comments(pause_after=-1, skip_existing=True)
+    # submission_stream = subreddit.stream.submissions(pause_after=-1, skip_existing=True)
+    # while True:
+    #     for comment in comment_stream:
+    #         if comment is None:
+    #             break
+    #         # print(comment.body)
+    #         print('comment')
+    #     for submission in submission_stream:
+    #         if submission is None:
+    #             break
+    #         # print(submission.title)
+    #         print('post')

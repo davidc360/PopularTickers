@@ -1,5 +1,4 @@
 import requests
-import json
 
 blacklisted_symbols = set()
 
