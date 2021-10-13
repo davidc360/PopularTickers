@@ -54,7 +54,6 @@ def should_filter(thread):
     if author in authors_to_filter:
         return True
     elif hasattr(thread, 'removed_by_category') and thread.removed_by_category is not None:
-        print(thread.id, 'is removed.')
         return True
     else:
         return thread.stickied
