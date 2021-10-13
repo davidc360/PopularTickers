@@ -1,5 +1,5 @@
 import './Socket.sass'
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 
 import io from "socket.io-client"
 const ENDPOINT = "http://127.0.0.1:5000"
@@ -56,13 +56,23 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     );
 }, shouldUpdate)
 
-function RedditPost({ title, body, author, subreddit, link }) {
-    const threadType = title ?  'post' : 'comment'
+function RedditPost({ title, body, author, subreddit, link, tickers }) {
+    const threadType = title ? 'post' : 'comment'
+    const bodyEl = useRef(null)
+
+    // convert tickers to a set
+    tickers = new Set(tickers)
+
+    // bold tickers found in the content
+    useEffect(() => {
+        let elHTML = bodyEl.current.innerHTML
+        console.log(elHTML)
+    }, [body])
 
     return (
         <div key={body} className='thread'>
             <div className='threadTitle'><a href={'https://www.reddit.com'+link} target='_blank'> {title} </a></div>
-            <div className='threadBody'>{body}</div>
+            <div className='threadBody' ref={bodyEl}>{body}</div>
             <div className="threadInfo">
                 <a href={'https://www.reddit.com'+link} target='_blank'> <span>{threadType}</span> </a>
                 <a href={'https://www.reddit.com/r/'+subreddit} target='_blank'> <span className='threadSub'>r/{subreddit}</span> </a>
