@@ -1,4 +1,5 @@
 import requests
+import string
 
 blacklisted_symbols = set()
 
@@ -53,3 +54,29 @@ def get_ticker_list():
     return ticker_list
 
 ticker_list = get_ticker_list()
+
+def extract_tickers(text):
+    words = text.split()
+    new_words = []
+
+    # filter words:
+    for word in words:
+        # strip punctuation
+        word = word.strip(string.punctuation)
+        # capitalize
+        word = word.upper()
+        # not blacklisted
+        if word in blacklisted_symbols:
+            continue
+        # alphabets only
+        if not word.isalpha():
+            continue
+        # 6 letters and under
+        if len(word) > 6:
+            continue
+        # word is a ticker
+        if word not in ticker_list:
+            continue
+        new_words.append(word)
+
+    return new_words

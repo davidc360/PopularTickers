@@ -10,19 +10,12 @@ function App() {
     useEffect(() => {
         const socket = io(ENDPOINT);
 
-        socket.on("post", data => {
+        socket.on("new thread", data => {
             setThreads(threads => [data, ...threads])
-        })
-        
-        socket.on("comment", data => {
-            setThreads(threads => [data, ...threads])
+            console.log(data.tickers)
         })
 
     }, []);
-
-    useEffect(() => {
-        console.log(threads)
-    }, [threads])
 
     // Turn thread informations into thread elements
     const postElements = threads.map(thread => (
@@ -49,7 +42,6 @@ function App() {
 }
 
 function RedditPost({ title, body, author, subreddit, link }) {
-    console.log(title)
     const threadType = title ?  'post' : 'comment'
 
     return (

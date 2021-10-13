@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
-from tickers import *
+from tickers import extract_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 
 load_dotenv()
@@ -33,26 +33,31 @@ def reddit_thread():
     subreddit = reddit.subreddit('+'.join(subreddits_to_monitor))
     comment_stream = subreddit.stream.comments(pause_after=-1, skip_existing=True)
     submission_stream = subreddit.stream.submissions(pause_after=-1, skip_existing=True)
+    
+    def process_and_emit(thread):
+        if thread is None:
+            return True
+        if should_filter(thread):
+            return True
+        socketio.emit('new thread', get_thread_info(thread))
+
     while True:
-        for comment in comment_stream:
-            if comment is None:
+        for thread in comment_stream:
+            if process_and_emit(thread):
                 break
-            if should_filter(comment):
+            # if comment is None:
+            #     break
+            # if should_filter(comment):
+            #     break
+            # socketio.emit('comment', get_thread_info(comment))
+        for thread in submission_stream:
+            # if submission is None:
+            #     break
+            # if should_filter(submission):
+            #     break
+            # socketio.emit('post', get_thread_info(submission))
+            if process_and_emit(thread):
                 break
-            socketio.emit('comment', get_thread_info(comment))
-        for submission in submission_stream:
-            if submission is None:
-                break
-            if should_filter(submission):
-                break
-            # print(submission.title)
-            # socketio.emit('post', {
-            #     'title': submission.title,
-            #     'body': submission.selftext,
-            #     'author': submission.author.name,
-            #     'subreddit': submission.subreddit.display_name
-            # })
-            socketio.emit('post', get_thread_info(submission))
 
 if __name__ == '__main__':
     threading.Thread(target=flask_thread).start()
