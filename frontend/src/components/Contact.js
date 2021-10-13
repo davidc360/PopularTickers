@@ -1,9 +1,10 @@
+import './Contact.sass'
 import React, { useEffect, useState, useRef } from 'react'
 
 export default function () {
     
     return (
-        <div className='about'>            
+        <div className='contact'>            
             <h1>
                 Contact
             </h1>

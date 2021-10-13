@@ -7,7 +7,7 @@ export default function () {
    
     return (
         <nav className='nav'>
-            <h1 className='logo'> Popular Tickers! </h1>
+            <h1 className='logo'>Popular Tickers</h1>
             <ul className='nav-links'>
                 <Link to={'/'}>
                     <li className='nav-link'>Home</li>

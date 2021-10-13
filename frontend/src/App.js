@@ -1,13 +1,21 @@
-import './App.css';
+import './App.sass';
 
 import Nav from './components/Nav'
 import About from './components/About'
-import Home from './components/Tickers'
 import Socket from './components/Socket'
+import TickerTable from './components/TickerTable'
 import Contact from './components/Contact'
 import EnterSecret from './components/EnterSecret'
 
 import { BrowserRouter, Route, Switch  } from 'react-router-dom'
+function Home() {
+    return (
+        <div className='main'>
+            <TickerTable />
+            <Socket />
+        </div>
+    )
+}
 
 function App() {
     return (
@@ -15,7 +23,7 @@ function App() {
                 <div className="App">
                 <Nav />
                 <Switch>    
-                    <Route exact path='/' component={Socket} />
+                    <Route exact path='/' component={Home} />
                     <Route path='/about' component={About} />
                     <Route path='/contact' component={Contact} />
                     <Route path='/code' component={EnterSecret} />

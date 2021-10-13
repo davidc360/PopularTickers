@@ -1,9 +1,8 @@
 import './Socket.sass'
+import React, { useState, useEffect } from "react"
 
-import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
-const ENDPOINT = "http://127.0.0.1:5000";
-
+import io from "socket.io-client"
+const ENDPOINT = "http://127.0.0.1:5000"
 
 function App() {
     const [threads, setThreads] = useState([])
@@ -32,6 +31,7 @@ function App() {
 
     return (
         <div className='threadsCtn'>
+            <h1 className='center'>Latest</h1>
             {postElements}
             {RedditPost({
                 title: 'Post Title',
@@ -45,17 +45,16 @@ function App() {
                 subreddit: 'wallstreetbets'
             })}
         </div>
-        
     );
 }
 
 function RedditPost({ title, body, author, subreddit, link }) {
     console.log(title)
-    const threadType = title === null ? 'comment' : 'post'
+    const threadType = title ?  'post' : 'comment'
 
     return (
         <div key={body} className='thread'>
-            <div className='threadTitle'>{title}</div>
+            <div className='threadTitle'><a href={'https://www.reddit.com'+link} target='_blank'> {title} </a></div>
             <div className='threadBody'>{body}</div>
             <div className="threadInfo">
                 <a href={'https://www.reddit.com'+link} target='_blank'> <span>{threadType}</span> </a>
