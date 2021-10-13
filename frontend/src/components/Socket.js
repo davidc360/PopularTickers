@@ -19,9 +19,12 @@ function SocketWrapper() {
     }, []);
 
     return (
-        <Socket threads={threads} isHovering={isHovering}
-            setHover={setIsHovering}
-        />
+        <div className='threadsCtn'>
+            <h1 className='center'>{isHovering ? '(Paused on Mouse Hover)' : 'Latest'}</h1>
+            <Socket threads={threads} isHovering={isHovering}
+                setHover={setIsHovering}
+            />
+        </div>
     )
 }
 
@@ -36,8 +39,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     ))
 
     return (
-        <div className='threadsCtn' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
-            <h1 className='center'>Latest</h1>
+        <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             {postElements}
             {RedditPost({
                 title: 'Post Title',
