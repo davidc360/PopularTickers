@@ -4,26 +4,39 @@ import React, { useState, useEffect } from "react"
 import io from "socket.io-client"
 const ENDPOINT = "http://127.0.0.1:5000"
 
-function App() {
+function SocketWrapper() {
     const [threads, setThreads] = useState([])
+    const [isHovering, setIsHovering] = useState(false)
 
     useEffect(() => {
         const socket = io(ENDPOINT);
 
         socket.on("new thread", data => {
             setThreads(threads => [data, ...threads])
-            console.log(data.tickers)
+            console.log('new thread', data)
         })
 
     }, []);
 
+    return (
+        <Socket threads={threads} isHovering={isHovering}
+            setHover={setIsHovering}
+        />
+    )
+}
+
+function shouldUpdate(prevPros, nextProps) {
+    return nextProps.isHovering
+}
+
+const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     // Turn thread informations into thread elements
     const postElements = threads.map(thread => (
         RedditPost(thread)
     ))
 
     return (
-        <div className='threadsCtn'>
+        <div className='threadsCtn' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             <h1 className='center'>Latest</h1>
             {postElements}
             {RedditPost({
@@ -39,7 +52,7 @@ function App() {
             })}
         </div>
     );
-}
+}, shouldUpdate)
 
 function RedditPost({ title, body, author, subreddit, link }) {
     const threadType = title ?  'post' : 'comment'
@@ -57,4 +70,4 @@ function RedditPost({ title, body, author, subreddit, link }) {
     )
 }
 
-export default App;
+export default SocketWrapper;
