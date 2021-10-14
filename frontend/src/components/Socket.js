@@ -41,7 +41,7 @@ function SocketWrapper() {
 const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     // Turn thread informations into thread elements
     const postElements = threads.map(thread => (
-        <RedditPost {...thread} key={thread.body}/>
+        <RedditPost {...thread} key={thread.body + thread.link}/>
     ))
 
     return (
@@ -68,8 +68,6 @@ function RedditPost({ title, body, author, subreddit, link, tickers }) {
 
     // convert tickers to a set
     const tickersSet = new Set(tickers)
-
-
 
     // bold tickers found in the content
     // first strip word from punctuation, and transform to uppercase
