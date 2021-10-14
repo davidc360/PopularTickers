@@ -10,6 +10,7 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
+import praw
 from tickers import ticker_list, extract_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 
@@ -63,12 +64,15 @@ def reddit_thread():
             }, upsert=True)
 
     while True:
-        for thread in comment_stream:
-            if process_and_emit(thread):
-                break
-        for thread in submission_stream:
-            if process_and_emit(thread):
-                break
+        try:
+            for thread in comment_stream:
+                if process_and_emit(thread):
+                    break
+            for thread in submission_stream:
+                if process_and_emit(thread):
+                    break
+        except praw.requests.exceptions.HTTPError as e:
+            print(e)
 
 if __name__ == '__main__':
     threading.Thread(target=flask_thread).start()
