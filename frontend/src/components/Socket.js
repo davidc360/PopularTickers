@@ -5,9 +5,9 @@ import SanitizedHTML from 'react-sanitized-html';
 function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
 
-    // useEffect(() => {
-    //     console.log(threads)
-    // }, [threads])
+    useEffect(() => {
+        console.log(threads)
+    }, [threads])
 
     return (
         <div className='threadsCtn'>
@@ -54,7 +54,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
         body = body
                     // spit words by non alphabetic chars and ' (apostrophe)
                     // the split keeps the deliminator
-                    .split(/([<> ])/gi)
+                    .split(/([<> .,-?])/gi)
                     .map(word => {
                         // remove punctuation
                         let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")
