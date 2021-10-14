@@ -1,7 +1,7 @@
 import os
 import json
 import threading
-import datetime as d
+from helpers import get_current_time
 
 from dotenv import load_dotenv
 
@@ -28,6 +28,12 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 def tickerlist():
     return json.dumps(list(ticker_list))
 
+@app.route('/stats')
+def returnStats():
+    current_time_str = get_current_time()
+    ticker = mongo.db.tickers.find_one({ current_time_str: {'$exists': 1} })
+    return json.dumps(ticker[current_time_str], default=str)
+
 def flask_thread():
     socketio.run(app)
 
@@ -45,7 +51,7 @@ def reddit_thread():
         thread_info = get_thread_info(thread)
         socketio.emit('new thread', thread_info)
 
-        current_time_str = d.datetime.now().strftime("%Y%m%d%H")
+        current_time_str = get_current_time()
         for ticker in thread_info['tickers']:        
             mongo.db.tickers.update({current_time_str: {'$exists': 1}}, {
                     '$inc': {f'{current_time_str}.{ticker}': 1}
