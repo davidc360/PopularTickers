@@ -91,7 +91,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
                     .split(/([<> ])/gi)
                     .map(word => {
                         // remove punctuation
-                        let word_transformed = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                        let word_transformed = word.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g, "")
                         // if letter is over 2 letters long, uppercase it
                         if (word_transformed.length > 2)
                             word_transformed = word_transformed.toUpperCase()
