@@ -37,7 +37,7 @@ def get_thread_info(thread):
     # t3_ = submission
     # https://www.reddit.com/dev/api/#fullnames
     type = get_thread_type(thread)
-    body = thread.selftext if type == 'post' else thread.body
+    body = thread.selftext if type == 'post' else thread.body_html
     tickers = extract_tickers(body)
     
     return {
@@ -46,7 +46,7 @@ def get_thread_info(thread):
         'author': thread.author.name,
         'subreddit': thread.subreddit.display_name,
         'link': thread.permalink,
-        'tickers': tickers
+        'tickers': tickers,
     }
 
 def should_filter(thread):

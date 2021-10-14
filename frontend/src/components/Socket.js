@@ -1,6 +1,6 @@
 import './Socket.sass'
 import React, { useState, useEffect, useRef } from "react"
-import ReactMarkdown from 'react-markdown'
+import SanitizedHTML from 'react-sanitized-html';
 
 import io from "socket.io-client"
 const ENDPOINT = "http://127.0.0.1:5000"
@@ -8,6 +8,8 @@ const ENDPOINT = "http://127.0.0.1:5000"
 function SocketWrapper() {
     const [threads, setThreads] = useState([])
     const [isHovering, setIsHovering] = useState(false)
+
+    const reff = useRef(null)
 
     useEffect(() => {
         const socket = io(ENDPOINT);
@@ -59,15 +61,26 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
 
 function RedditPost({ title, body, author, subreddit, link, tickers }) {
     const threadType = title ? 'post' : 'comment'
+    // const bodyEl = useRef(null)
 
     // convert tickers to a set
-    tickers = new Set(tickers)
+    const tickersSet = new Set(tickers)
+
+    // bold tickers found in the content
+    // useEffect(() => {
+    //     let elHTML = bodyEl.current.innerHTML
+    //     console.log(elHTML)
+    // }, [body])
 
     return (
         <div key={body} className='thread'>
             <div className='threadTitle'><a href={'https://www.reddit.com'+link} target='_blank'> {title} </a></div>
-            <ReactMarkdown>{body}</ReactMarkdown>
-            {/* <div className='threadBody' ref={bodyEl}>{body}</div> */}
+            {threadType == 'post' ? (
+                <div className='threadBody'><div><p>{body}</p></div></div>
+            ) : (
+                <SanitizedHTML html={body} className='threadBody'/>      
+            )}
+            {/* <div className='threadBody' >{bodyHTML}</div> */}
             <div className="threadInfo">
                 <a href={'https://www.reddit.com'+link} target='_blank'> <span>{threadType}</span> </a>
                 <a href={'https://www.reddit.com/r/'+subreddit} target='_blank'> <span className='threadSub'>r/{subreddit}</span> </a>
