@@ -72,6 +72,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
     // first strip word from punctuation, and transform to uppercase
     // then check if the ticker list
     // console.log(type, body, link)
+    // console.log(tickerList.has("->".replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/<.+?>/g, "").toUpperCase()))
     if (type === 'linkpost') {
         // test if image link or regular link
         if (body.match(/\.(jpeg|jpg|gif|png)$/)) {
@@ -81,10 +82,12 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
             body = <a href={body}>{body}</a>
         }
     } else {
-        body = body.split(' ')
+        body = body.replace(/<.+?>/g, " ")
+                    .split(' ')
                     .map(word => (
-                        tickerList.has(word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toUpperCase()) ?
-                        `<strong>${word}</strong>`
+                        // regex removes punctuation, second removes HTML tags
+                        tickerList.has(word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/<.+?>/g, "").toUpperCase()) ?
+                        `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
                         : word
                     ))
                     .join(' ')
