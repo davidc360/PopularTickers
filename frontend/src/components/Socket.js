@@ -3,22 +3,28 @@ import React, { useState, useEffect, useRef } from "react"
 import SanitizedHTML from 'react-sanitized-html';
 
 import io from "socket.io-client"
+import axios from 'axios'
+
 const ENDPOINT = "http://127.0.0.1:5000"
+axios.defaults.headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+}
+
+let tickerList = new Set()
+
+axios.get(ENDPOINT + '/tickerlist').then(res => tickerList = new Set(res.data))
 
 function SocketWrapper() {
     const [threads, setThreads] = useState([])
     const [isHovering, setIsHovering] = useState(false)
 
-    const reff = useRef(null)
-
-    useEffect(() => {
+    useEffect(async () => {
         const socket = io(ENDPOINT);
 
         socket.on("new thread", data => {
             setThreads(threads => [data, ...threads])
-            console.log('new thread', data)
         })
-
     }, []);
 
     return (
@@ -43,12 +49,12 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
             {postElements}
             {RedditPost({
                 title: 'Post Title',
-                body: 'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium, maxime quo ratione eos molestias totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
+                body: 'AAPL, Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium, maxime quo ratione eos molestias MSFT totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
                 author: 'king_slither_220',
                 subreddit: 'wallstreetbets'
             })}
             {RedditPost({
-                body: 'Way to go buddy',
+                body: 'Way to go buddy love TGT',
                 author: 'a_commenter_3543',
                 subreddit: 'wallstreetbets'
             })}
@@ -63,19 +69,27 @@ function RedditPost({ title, body, author, subreddit, link, tickers }) {
     // convert tickers to a set
     const tickersSet = new Set(tickers)
 
+
+
     // bold tickers found in the content
-    useEffect(() => {
-        let elHTML = bodyEl.current.innerHTML
-        console.log(elHTML)
-    }, [body])
+    // first strip word from punctuation, and transform to uppercase
+    // then check if the ticker list
+    body = body
+        .split(' ')
+        .map(word => (
+        tickerList.has(word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toUpperCase()) ?
+            `<strong>${word}</strong>`
+            : word
+        ))
+        .join(' ')
 
     return (
         <div className='thread'>
             <div className='threadTitle'><a href={'https://www.reddit.com'+link} target='_blank'> {title} </a></div>
             {threadType == 'post' ? (
-                <div className='threadBody' ref={bodyEl}><div><p>{body}</p></div></div>
+                <SanitizedHTML html={`<p>${body}</p>`} className='threadBody'/>      
             ) : (
-                <SanitizedHTML html={body} className='threadBody' ref={bodyEl}/>      
+                <SanitizedHTML html={body} className='threadBody'/>      
             )}
             {/* <div className='threadBody' >{bodyHTML}</div> */}
             <div className="threadInfo">

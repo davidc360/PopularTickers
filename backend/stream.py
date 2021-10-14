@@ -1,4 +1,5 @@
 import os
+import json
 import threading
 from dotenv import load_dotenv
 
@@ -7,10 +8,11 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
-from tickers import extract_tickers
+from tickers import ticker_list, extract_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 
 load_dotenv()
+
 
 app = Flask(__name__)
 CORS(app)
@@ -20,11 +22,9 @@ app.config["MONGO_URI"] =  mongo_URI
 mongo = PyMongo(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-@socketio.on('connect')
-def connected():
-    emit('message', {
-        'message': 'hahaha'
-    })
+@app.route('/tickerlist')
+def tickerlist():
+    return json.dumps(list(ticker_list))
 
 def flask_thread():
     socketio.run(app)
