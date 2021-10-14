@@ -2,31 +2,9 @@ import './Socket.sass'
 import React, { useState, useEffect, useRef } from "react"
 import SanitizedHTML from 'react-sanitized-html';
 
-import io from "socket.io-client"
-import axios from 'axios'
-
-const ENDPOINT = "http://127.0.0.1:5000"
-// axios.defaults.headers = {
-//     'Access-Control-Allow-Origin': '*',
-//     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-// }
-
-// let tickerList = new Set()
-
-// axios.get(ENDPOINT + '/tickerlist').then(res => tickerList = new Set(res.data))
-
-function SocketWrapper() {
-    const [threads, setThreads] = useState([])
+function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
 
-    useEffect(async () => {
-        const socket = io(ENDPOINT);
-
-        socket.on("new thread", data => {
-            setThreads(threads => [data, ...threads])
-        })
-    }, []);
-    
     useEffect(() => {
         console.log(threads)
     }, [threads])
@@ -51,18 +29,6 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     return (
         <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             {postElements}
-            {RedditPost({
-                title: 'Post Title',
-                body: 'AAPL, I\'m fine we\'re yeah Lorem ipsum dolor, sit amet consectetur don\'t adipisicing elit. Praesentium, maxime quo ratione eos molestias MSFT <sup>sdfds</sup>totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
-                author: 'king_slither_220',
-                subreddit: 'wallstreetbets',
-                type: 'textpost'
-            })}
-            {RedditPost({
-                body: 'Way to go buddy love TGT',
-                author: 'a_commenter_3543',
-                subreddit: 'wallstreetbets'
-            })}
         </div>
     );
 }, (prevPros, nextProps) => nextProps.isHovering)

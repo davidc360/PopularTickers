@@ -1,5 +1,7 @@
 import './App.sass';
+import React, { useState, useEffect, useRef } from "react"
 
+import { BrowserRouter, Route, Switch  } from 'react-router-dom'
 import Nav from './components/Nav'
 import About from './components/About'
 import Socket from './components/Socket'
@@ -7,12 +9,24 @@ import TickerTable from './components/TickerTable'
 import Contact from './components/Contact'
 import EnterSecret from './components/EnterSecret'
 
-import { BrowserRouter, Route, Switch  } from 'react-router-dom'
+import io from "socket.io-client"
+const ENDPOINT = "http://127.0.0.1:5000"
+
 function Home() {
+    const [threads, setThreads] = useState([])
+
+    useEffect(() => {
+        const socket = io(ENDPOINT);
+
+        socket.on("new thread", data => {
+            setThreads(threads => [data, ...threads])
+        })
+    }, []);
+
     return (
         <div className='main'>
             <TickerTable />
-            <Socket />
+            <Socket threads={ threads }/>
         </div>
     )
 }
