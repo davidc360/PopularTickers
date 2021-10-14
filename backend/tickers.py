@@ -1,5 +1,6 @@
 import requests
 import string
+import re
 
 blacklisted_symbols = set()
 
@@ -58,7 +59,8 @@ def get_ticker_list():
 ticker_list = get_ticker_list()
 
 def extract_tickers(text):
-    words = text.split()
+    # words = text.split()
+    words = re.split('([<> ])', text)
     new_words = []
 
     # filter words:

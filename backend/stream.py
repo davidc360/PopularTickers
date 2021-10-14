@@ -46,8 +46,6 @@ def reddit_thread():
         socketio.emit('new thread', thread_info)
 
         current_time_str = d.datetime.now().strftime("%Y%m%d%H")
-        print(current_time_str)
-
         for ticker in thread_info['tickers']:        
             mongo.db.tickers.update({current_time_str: {'$exists': 1}}, {
                     '$inc': {f'{current_time_str}.{ticker}': 1}
