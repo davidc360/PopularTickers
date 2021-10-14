@@ -93,7 +93,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers }) {
             <div className="threadInfo">
                 <a href={'https://www.reddit.com'+link} target='_blank'> <span>{threadType}</span> </a>
                 <a href={'https://www.reddit.com/r/'+subreddit} target='_blank'> <span className='threadSub'>r/{subreddit}</span> </a>
-                <a href={'https://www.reddit.com/user/'+author} target='_blank'> <span className='threadAuthor'>u/{author}</span> </a>
+                <a href={'https://www.reddit.com/u/'+author} target='_blank'> <span className='threadAuthor'>u/{author}</span> </a>
             </div>
         </div>
     )
