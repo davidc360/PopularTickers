@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import "./TickerTable.sass"
 
+// tickers: sorted by mentions in App.js
 export default function({ tickers }) {
     console.log(tickers)
-    const tickerRows = Object.keys(tickers).map(ticker => {
-        return <TickerRow ticker={ticker} count={tickers[ticker]} key={ticker}/>
+    const tickerRows = tickers.map(ticker => {
+        return <TickerRow ticker={ticker['name']} count={ticker['count']} key={ticker['name']}/>
     })
     return (
         <div className="stats">

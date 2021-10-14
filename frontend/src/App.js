@@ -34,9 +34,16 @@ function Home() {
 
     }, []);
 
+    const sortedTickers = Object.keys(currentTickers).map(ticker => {
+        return {
+            name: ticker,
+            count: currentTickers[ticker]
+        }
+    }).sort((a, b) => (b.count - a.count))
+
     return (
         <div className='main'>
-            <TickerTable tickers={ currentTickers }/>
+            <TickerTable tickers={ sortedTickers }/>
             <Socket threads={ threads }/>
         </div>
     )
