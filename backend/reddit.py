@@ -37,7 +37,13 @@ def get_thread_info(thread):
     # t3_ = submission
     # https://www.reddit.com/dev/api/#fullnames
     type = get_thread_type(thread)
-    body = thread.selftext if type == 'post' else thread.body_html
+    body = None
+    
+    if type == 'post':
+        body = thread.selftext if thread.is_self else thread.url
+    elif type == 'comment':
+        body = thread.body_html
+
     tickers = extract_tickers(body)
     
     return {

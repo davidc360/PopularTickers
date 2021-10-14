@@ -27,6 +27,9 @@ function App() {
                     <Route path='/about' component={About} />
                     <Route path='/contact' component={Contact} />
                     <Route path='/code' component={EnterSecret} />
+                    {/* route reddit links to reddit */}
+                    <Route path='/r/:subreddit' component={() => { window.location.replace('https://reddit.com/' + window.location.pathname) }} />
+                    <Route path='/u/:user' component={() => { window.location.replace('https://reddit.com/' + window.location.pathname) }} />
                    
                     <Route path='*' component={()=>(<div>Oh no!!!! Page not found.</div>)} />
                 </Switch>
