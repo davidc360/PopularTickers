@@ -34,6 +34,11 @@ def returnStats():
     ticker = mongo.db.tickers.find_one({ current_time_str: {'$exists': 1} })
     return json.dumps(ticker[current_time_str] if ticker is not None else None, default=str)
 
+@app.route('/last_thread')
+def returnLastThread():
+    last_thread = mongo.db.last_thread.find_one({})
+    return json.dumps(last_thread, default=str)
+
 def flask_thread():
     socketio.run(app)
 
@@ -47,13 +52,13 @@ def reddit_thread():
             return True
         if should_filter(thread):
             return True
-
         thread_info = get_thread_info(thread)
         socketio.emit('new thread', thread_info)
+        mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
 
         current_time_str = get_current_time()
         for ticker in thread_info['tickers']:        
-            mongo.db.tickers.update({current_time_str: {'$exists': 1}}, {
+            mongo.db.tickers.update_one({current_time_str: {'$exists': 1}}, {
                     '$inc': {f'{current_time_str}.{ticker}': 1}
             }, upsert=True)
 
