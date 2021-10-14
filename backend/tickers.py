@@ -4,9 +4,11 @@ import string
 blacklisted_symbols = set()
 
 def refresh_blacklist_list():
-    with open('blacklisted_tickers.txt', 'r') as f:
-        for line in f:
-            blacklisted_symbols.add(line.strip().upper())
+    blacklists = ['blacklisted_tickers.txt', 'html_tags_list.txt']
+    for list in blacklists:
+        with open(list, 'r') as f:
+            for line in f:
+                blacklisted_symbols.add(line.strip().upper())
 
 def add_to_blacklist(ticker):
     with open('blacklisted_tickers.txt', 'a') as f:

@@ -53,7 +53,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
             {postElements}
             {RedditPost({
                 title: 'Post Title',
-                body: 'AAPL, I\'m fine we\'re yeah Lorem ipsum dolor, sit amet consectetur don\'t adipisicing elit. Praesentium, maxime quo ratione eos molestias MSFT totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
+                body: 'AAPL, I\'m fine we\'re yeah Lorem ipsum dolor, sit amet consectetur don\'t adipisicing elit. Praesentium, maxime quo ratione eos molestias MSFT <sup>sdfds</sup>totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
                 author: 'king_slither_220',
                 subreddit: 'wallstreetbets',
                 type: 'textpost'
