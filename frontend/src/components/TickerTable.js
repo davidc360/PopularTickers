@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import "./TickerTable.sass"
 
-export default function() {
+export default function({ tickers }) {
+    console.log(tickers)
     return (
         <div className="stats">
             <h1>Stats</h1>

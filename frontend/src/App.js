@@ -10,22 +10,33 @@ import Contact from './components/Contact'
 import EnterSecret from './components/EnterSecret'
 
 import io from "socket.io-client"
+import axios from 'axios'
+
 const ENDPOINT = "http://127.0.0.1:5000"
+axios.defaults.headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+}
 
 function Home() {
     const [threads, setThreads] = useState([])
+    const [currentTickers, setCurrentTickers] = useState({})
 
     useEffect(() => {
+        // set up websockets
         const socket = io(ENDPOINT);
-
         socket.on("new thread", data => {
             setThreads(threads => [data, ...threads])
         })
+
+        // get current tickers and their stats
+        axios.get(ENDPOINT + '/stats').then(res => setCurrentTickers(res.data))
+
     }, []);
 
     return (
         <div className='main'>
-            <TickerTable />
+            <TickerTable tickers={ currentTickers }/>
             <Socket threads={ threads }/>
         </div>
     )
