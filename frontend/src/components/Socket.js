@@ -31,14 +31,11 @@ function SocketWrapper() {
     )
 }
 
-function shouldUpdate(prevPros, nextProps) {
-    return nextProps.isHovering
-}
-
+// abstract away the socket component and only update it when mouse is not hovering
 const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     // Turn thread informations into thread elements
     const postElements = threads.map(thread => (
-        RedditPost(thread)
+        <RedditPost {...thread} key={thread.body}/>
     ))
 
     return (
@@ -57,28 +54,28 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
             })}
         </div>
     );
-}, shouldUpdate)
+}, (prevPros, nextProps) => nextProps.isHovering)
 
 function RedditPost({ title, body, author, subreddit, link, tickers }) {
     const threadType = title ? 'post' : 'comment'
-    // const bodyEl = useRef(null)
+    const bodyEl = useRef(null)
 
     // convert tickers to a set
     const tickersSet = new Set(tickers)
 
     // bold tickers found in the content
-    // useEffect(() => {
-    //     let elHTML = bodyEl.current.innerHTML
-    //     console.log(elHTML)
-    // }, [body])
+    useEffect(() => {
+        let elHTML = bodyEl.current.innerHTML
+        console.log(elHTML)
+    }, [body])
 
     return (
-        <div key={body} className='thread'>
+        <div className='thread'>
             <div className='threadTitle'><a href={'https://www.reddit.com'+link} target='_blank'> {title} </a></div>
             {threadType == 'post' ? (
-                <div className='threadBody'><div><p>{body}</p></div></div>
+                <div className='threadBody' ref={bodyEl}><div><p>{body}</p></div></div>
             ) : (
-                <SanitizedHTML html={body} className='threadBody'/>      
+                <SanitizedHTML html={body} className='threadBody' ref={bodyEl}/>      
             )}
             {/* <div className='threadBody' >{bodyHTML}</div> */}
             <div className="threadInfo">
