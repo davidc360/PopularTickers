@@ -29,7 +29,10 @@ def get_thread_type(thread):
     if thread.name[0:2] == 't1':
         type = 'comment'
     elif thread.name[0:2] == 't3':
-        type = 'post'
+        if thread.is_self:
+            type = 'textpost'
+        else:
+            type = 'linkpost'
     return type
 
 def get_thread_info(thread):
@@ -37,22 +40,25 @@ def get_thread_info(thread):
     # t3_ = submission
     # https://www.reddit.com/dev/api/#fullnames
     type = get_thread_type(thread)
-    body = None
-    
-    if type == 'post':
-        body = thread.selftext if thread.is_self else thread.url
-    elif type == 'comment':
-        body = thread.body_html
 
+    body = None
+    if type == 'comment':
+        body = thread.body_html
+    elif type == 'textpost':
+        body = thread.self_text
+    elif type == 'linkpost':
+        body = thread.url 
+    
     tickers = extract_tickers(body)
     
     return {
-        'title': thread.title if type == 'post' else None,
+        'title': thread.title if 'post' in type else None,
         'body': body,
         'author': thread.author.name,
         'subreddit': thread.subreddit.display_name,
         'link': thread.permalink,
         'tickers': tickers,
+        'type': type
     }
 
 def should_filter(thread):

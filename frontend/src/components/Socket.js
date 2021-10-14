@@ -51,7 +51,8 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
                 title: 'Post Title',
                 body: 'AAPL, Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium, maxime quo ratione eos molestias MSFT totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
                 author: 'king_slither_220',
-                subreddit: 'wallstreetbets'
+                subreddit: 'wallstreetbets',
+                type: 'textpost'
             })}
             {RedditPost({
                 body: 'Way to go buddy love TGT',
@@ -62,34 +63,47 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     );
 }, (prevPros, nextProps) => nextProps.isHovering)
 
-function RedditPost({ title, body, author, subreddit, link, tickers }) {
+function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
     const threadType = title ? 'post' : 'comment'
-    const bodyEl = useRef(null)
-
     // convert tickers to a set
     const tickersSet = new Set(tickers)
 
     // bold tickers found in the content
     // first strip word from punctuation, and transform to uppercase
     // then check if the ticker list
-    body = body
-        .split(' ')
-        .map(word => (
-        tickerList.has(word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toUpperCase()) ?
-            `<strong>${word}</strong>`
-            : word
-        ))
-        .join(' ')
+    // console.log(type, body, link)
+    if (type === 'linkpost') {
+        // test if image link or regular link
+        if (body.match(/\.(jpeg|jpg|gif|png)$/)) {
+            body = <a href={"https://reddit.com" + link}> <img src={body}/> </a>
+            console.log('got an image link', body)
+        } else {
+            body = <a href={body}>{body}</a>
+        }
+    } else {
+        body = body.split(' ')
+                    .map(word => (
+                        tickerList.has(word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").toUpperCase()) ?
+                        `<strong>${word}</strong>`
+                        : word
+                    ))
+                    .join(' ')
+    }
+
+    if (type === 'textpost') {
+        body = `<p>${body}</p>`
+    }
+
 
     return (
         <div className='thread'>
             <div className='threadTitle'><a href={'https://www.reddit.com'+link} target='_blank'> {title} </a></div>
-            {threadType == 'post' ? (
-                <SanitizedHTML html={`<p>${body}</p>`} className='threadBody'/>      
+            {type === ('linkpost') ? (
+                <div className='threadBody'>{body}</div>
+                // <SanitizedHTML html={`<p>${body}</p>`} className='threadBody'/>      
             ) : (
                 <SanitizedHTML html={body} className='threadBody'/>      
             )}
-            {/* <div className='threadBody' >{bodyHTML}</div> */}
             <div className="threadInfo">
                 <a href={'https://www.reddit.com'+link} target='_blank'> <span>{threadType}</span> </a>
                 <a href={'https://www.reddit.com/r/'+subreddit} target='_blank'> <span className='threadSub'>r/{subreddit}</span> </a>

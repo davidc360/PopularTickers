@@ -42,9 +42,9 @@ def reddit_thread():
         socketio.emit('new thread', get_thread_info(thread))
 
     while True:
-        for thread in comment_stream:
-            if process_and_emit(thread):
-                break
+        # for thread in comment_stream:
+        #     if process_and_emit(thread):
+        #         break
             # if comment is None:
             #     break
             # if should_filter(comment):
