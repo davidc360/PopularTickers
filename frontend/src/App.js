@@ -48,6 +48,9 @@ function Home() {
 
         // get current tickers and their stats
         axios.get(ENDPOINT + '/stats').then(res => setCurrentTickers(res.data))
+        
+        // get last thread on first render
+        axios.get(ENDPOINT + '/last_thread').then(res => setThreads([res.data]))
 
         return () => {
             // turning of socket listner on unmount
