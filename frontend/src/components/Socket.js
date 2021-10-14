@@ -53,7 +53,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
             {postElements}
             {RedditPost({
                 title: 'Post Title',
-                body: 'AAPL, Lorem ipsum dolor, sit amet consectetur adipisicing elit. Praesentium, maxime quo ratione eos molestias MSFT totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
+                body: 'AAPL, I\'m fine we\'re yeah Lorem ipsum dolor, sit amet consectetur don\'t adipisicing elit. Praesentium, maxime quo ratione eos molestias MSFT totam aspernatur vitae animi repudiandae cupiditate odit nemo veniam harum. Aut vel fuga labore explicabo ducimus!',
                 author: 'king_slither_220',
                 subreddit: 'wallstreetbets',
                 type: 'textpost'
@@ -85,15 +85,25 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
             body = <a href={body}>{body}</a>
         }
     } else {
-        body = body.replace(/<.+?>/g, " ")
-                    .split(' ')
-                    .map(word => (
-                        // regex removes punctuation, second removes HTML tags
-                        tickerList.has(word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/<.+?>/g, "").toUpperCase()) ?
-                        `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
-                        : word
-                    ))
-                    .join(' ')
+        body = body
+                    // spit words by non alphabetic chars and ' (apostrophe)
+                    // the split keeps the deliminator
+                    .split(/([<> ])/gi)
+                    .map(word => {
+                        // remove punctuation
+                        let word_transformed = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "")
+                        // if letter is over 2 letters long, uppercase it
+                        if (word_transformed.length > 2)
+                            word_transformed = word_transformed.toUpperCase()
+                        if (tickerList.has(word_transformed)) {
+                            return `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
+                        } else {
+                            return word
+                        }
+                    })
+                    .join('')
+        // body = body.replaceAll(new RegExp(`("|>|^|\\s|\\b)(${[...tickerList, "'"].join('|')})("|<|\\s|$|\\b)`, 'gi'), '$1<b>$2</b>$3')
+        // body = body.replaceAll(new RegExp(`([^a-zA-Z0-9_'&;]|^)(${[...tickerList].join('|')})([^a-zA-Z0-9_'&;]|$)`, 'ig'), '$1<b>$2</b>$3')
     }
 
     if (type === 'textpost') {
