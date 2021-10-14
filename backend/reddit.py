@@ -11,6 +11,7 @@ subreddits_to_monitor = [
     'investing',
     'options',
     'robinhood',
+    'vitards'
 ]
 
 authors_to_filter = [

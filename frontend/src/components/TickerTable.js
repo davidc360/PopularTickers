@@ -3,6 +3,9 @@ import "./TickerTable.sass"
 
 export default function({ tickers }) {
     console.log(tickers)
+    const tickerRows = Object.keys(tickers).map(ticker => {
+        return <TickerRow ticker={ticker} count={tickers[ticker]} key={ticker}/>
+    })
     return (
         <div className="stats">
             <h1>Stats</h1>
@@ -18,7 +21,9 @@ export default function({ tickers }) {
                     <th>Negative %</th>
                 </tr>
                 </thead>
-                <tbody><TickerRow ticker='AAPL' /></tbody>
+                <tbody>
+                    {tickerRows}
+                </tbody>
             </table>
         </div>
     )    
