@@ -1,6 +1,8 @@
 import os
 import json
 import threading
+import datetime as d
+
 from dotenv import load_dotenv
 
 from flask import Flask, Response, request
@@ -39,23 +41,23 @@ def reddit_thread():
             return True
         if should_filter(thread):
             return True
-        socketio.emit('new thread', get_thread_info(thread))
+
+        thread_info = get_thread_info(thread)
+        socketio.emit('new thread', thread_info)
+
+        current_time_str = d.datetime.now().strftime("%Y%m%d%H")
+        print(current_time_str)
+
+        for ticker in thread_info['tickers']:        
+            mongo.db.tickers.update({current_time_str: {'$exists': 1}}, {
+                    '$inc': {f'{current_time_str}.{ticker}': 1}
+            }, upsert=True)
 
     while True:
         for thread in comment_stream:
             if process_and_emit(thread):
                 break
-            # if comment is None:
-            #     break
-            # if should_filter(comment):
-            #     break
-            # socketio.emit('comment', get_thread_info(comment))
         for thread in submission_stream:
-            # if submission is None:
-            #     break
-            # if should_filter(submission):
-            #     break
-            # socketio.emit('post', get_thread_info(submission))
             if process_and_emit(thread):
                 break
 

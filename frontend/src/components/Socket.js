@@ -6,14 +6,14 @@ import io from "socket.io-client"
 import axios from 'axios'
 
 const ENDPOINT = "http://127.0.0.1:5000"
-axios.defaults.headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-}
+// axios.defaults.headers = {
+//     'Access-Control-Allow-Origin': '*',
+//     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+// }
 
-let tickerList = new Set()
+// let tickerList = new Set()
 
-axios.get(ENDPOINT + '/tickerlist').then(res => tickerList = new Set(res.data))
+// axios.get(ENDPOINT + '/tickerlist').then(res => tickerList = new Set(res.data))
 
 function SocketWrapper() {
     const [threads, setThreads] = useState([])
@@ -91,11 +91,11 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
                     .split(/([<> ])/gi)
                     .map(word => {
                         // remove punctuation
-                        let word_transformed = word.replace(/[.,\/#!?$%\^&\*;:{}=\-_`~()]/g, "")
+                        let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")
                         // if letter is over 2 letters long, uppercase it
                         if (word_transformed.length > 2)
                             word_transformed = word_transformed.toUpperCase()
-                        if (tickerList.has(word_transformed)) {
+                        if (tickersSet.has(word_transformed)) {
                             return `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
                         } else {
                             return word
