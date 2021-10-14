@@ -4,6 +4,7 @@ import threading
 from helpers import get_current_time
 
 from dotenv import load_dotenv
+load_dotenv()
 
 from flask import Flask, Response, request
 from flask_cors import CORS
@@ -14,7 +15,6 @@ import praw
 from tickers import ticker_list, extract_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 
-load_dotenv()
 
 
 app = Flask(__name__)
