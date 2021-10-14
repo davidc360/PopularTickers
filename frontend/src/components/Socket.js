@@ -26,6 +26,10 @@ function SocketWrapper() {
             setThreads(threads => [data, ...threads])
         })
     }, []);
+    
+    useEffect(() => {
+        console.log(threads)
+    }, [threads])
 
     return (
         <div className='threadsCtn'>
@@ -77,7 +81,6 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
         // test if image link or regular link
         if (body.match(/\.(jpeg|jpg|gif|png)$/)) {
             body = <a href={"https://reddit.com" + link}> <img src={body}/> </a>
-            console.log('got an image link', body)
         } else {
             body = <a href={body}>{body}</a>
         }

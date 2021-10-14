@@ -45,7 +45,7 @@ def get_thread_info(thread):
     if type == 'comment':
         body = thread.body_html
     elif type == 'textpost':
-        body = thread.self_text
+        body = thread.selftext
     elif type == 'linkpost':
         body = thread.url 
     
