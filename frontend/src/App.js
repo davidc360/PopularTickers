@@ -20,18 +20,39 @@ axios.defaults.headers = {
 
 function Home() {
     const [threads, setThreads] = useState([])
-    const [currentTickers, setCurrentTickers] = useState({})
+    const [currentTickers, _setCurrentTickers] = useState({})
+    const currentTickersRef = useRef(currentTickers)
+    const setCurrentTickers = tickers => { currentTickersRef.current = tickers; _setCurrentTickers(tickers)}
+    // using ref to work around access the state in socket handler
+    // see https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
 
     useEffect(() => {
         // set up websockets
         const socket = io(ENDPOINT);
-        socket.on("new thread", data => {
+        const handleNewThread = data => {
             setThreads(threads => [data, ...threads])
-        })
+
+            console.log('current tickers', currentTickersRef.current)
+
+            // update ticker mention count
+            if (data.tickers.length > 0) {
+                const updatedTickerList = { ...currentTickersRef.current }
+                data.tickers.forEach(ticker => {
+                    const curCount = updatedTickerList[ticker] || 0
+                    updatedTickerList[ticker] = curCount + 1
+                })
+                setCurrentTickers(updatedTickerList)
+            }
+        }
+        socket.on("new thread", handleNewThread)
 
         // get current tickers and their stats
         axios.get(ENDPOINT + '/stats').then(res => setCurrentTickers(res.data))
 
+        return () => {
+            // turning of socket listner on unmount
+            socket.off('new thread', handleNewThread);
+        }
     }, []);
 
     const sortedTickers = Object.keys(currentTickers).map(ticker => {

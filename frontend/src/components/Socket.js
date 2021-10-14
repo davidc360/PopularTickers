@@ -5,9 +5,9 @@ import SanitizedHTML from 'react-sanitized-html';
 function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
 
-    useEffect(() => {
-        console.log(threads)
-    }, [threads])
+    // useEffect(() => {
+    //     console.log(threads)
+    // }, [threads])
 
     return (
         <div className='threadsCtn'>

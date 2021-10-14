@@ -32,7 +32,7 @@ def tickerlist():
 def returnStats():
     current_time_str = get_current_time()
     ticker = mongo.db.tickers.find_one({ current_time_str: {'$exists': 1} })
-    return json.dumps(ticker[current_time_str], default=str)
+    return json.dumps(ticker[current_time_str] if ticker is not None else None, default=str)
 
 def flask_thread():
     socketio.run(app)
