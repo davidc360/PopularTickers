@@ -47,6 +47,7 @@ def reddit_thread():
     submission_stream = subreddit.stream.submissions(pause_after=-1, skip_existing=True)
     
     def process_and_emit(thread):
+        print(thread)
         if thread is None:
             return True
         if should_filter(thread):
@@ -73,8 +74,8 @@ def reddit_thread():
             print(e)
 
 def main():
-    threading.Thread(target=flask_thread).start()
     threading.Thread(target=reddit_thread).start()
+    threading.Thread(target=flask_thread).start()
 
 if __name__ == '__main__':
     main()
