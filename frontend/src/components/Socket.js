@@ -24,6 +24,7 @@ function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
     const [showSettings, setShowSettings] = useState(false)
     const [blockOffensive, setBlockOffensive] = useState(false)
+    const [onlyShowIfTicker, setOnlyShowIfTicker] = useState(false)
 
     function toggleShowSettings() {
         setShowSettings(show => !show)
@@ -39,19 +40,26 @@ function SocketWrapper({ threads }) {
                 {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
             </h1>
             <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
-            <SettingsPane show={showSettings} blockOffensive={blockOffensive} setBlockOffensive={setBlockOffensive}/>
+            <SettingsPane show={showSettings}
+                blockOffensive={blockOffensive} setBlockOffensive={setBlockOffensive}
+                onlyShowIfTicker={onlyShowIfTicker} setOnlyShowIfTicker={setOnlyShowIfTicker}
+            />
             <Socket threads={threads} isHovering={isHovering}
                 setHover={setIsHovering} blockOffensive={blockOffensive}
+                onlyShowIfTicker={onlyShowIfTicker}
             />
         </div>
     )
 }
 
 // abstract away the socket component and only update it when mouse is not hovering
-const Socket = React.memo(function Socket({ threads, isHovering, setHover, blockOffensive }) {
+const Socket = React.memo(function Socket({ threads, isHovering, setHover, blockOffensive, onlyShowIfTicker }) {
     // Turn thread informations into thread elements
     const postElements = threads?.map(thread => (
-        <RedditPost {...thread} key={thread.body + thread.link} blockOffensive={blockOffensive}/>
+        <RedditPost {...thread}
+            key={thread.body + thread.link} blockOffensive={blockOffensive}
+            onlyShowIfTicker={onlyShowIfTicker}
+        />
     ))
 
     return (
@@ -63,6 +71,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, block
                 author='david'
                 type='comment'
                 blockOffensive={blockOffensive}
+                onlyShowIfTicker={onlyShowIfTicker}
             />
         </div>
     );
@@ -132,9 +141,9 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
     )
 }
 
-function SettingsPane({ show, blockOffensive, setBlockOffensive }) {
+function SettingsPane({ show, blockOffensive, setBlockOffensive, onlyShowIfTicker, setOnlyShowIfTicker }) {
     const showSty = {
-        maxHeight: '2em',
+        maxHeight: '2.5em',
         transition: 'max-height 0.5s ease',
         overflow: 'hidden'
     }
@@ -144,12 +153,20 @@ function SettingsPane({ show, blockOffensive, setBlockOffensive }) {
         transition: 'max-height 0.5s ease'
     }
 
-    function handleCheckboxChecked(e) {
+    function updateBlockOffensive(e) {
         setBlockOffensive(e.target.checked)
     }
 
-    function toggleCheckbox() {
+    function toggleBlockOffensive() {
         setBlockOffensive(val => !val)
+    }
+
+    function updateOnlyShowIfTicker(e) {
+        setOnlyShowIfTicker(e.target.checked)
+    }
+
+    function toggleOnlyShowIfTicker(){
+        setOnlyShowIfTicker(val => !val)
     }
 
     return (
@@ -159,8 +176,14 @@ function SettingsPane({ show, blockOffensive, setBlockOffensive }) {
         >
             <div className='setting'>
                 <input type="checkbox" checked={blockOffensive}
-                    onChange={(handleCheckboxChecked)} />
-                <span onClick={toggleCheckbox}>Block offensive words</span>
+                    onChange={(updateBlockOffensive)} />
+                <span onClick={toggleBlockOffensive}>Block offensive words</span>
+            </div>
+            
+            <div className='setting'>
+                <input type="checkbox" checked={onlyShowIfTicker}
+                    onChange={(updateOnlyShowIfTicker)} />
+                <span onClick={toggleOnlyShowIfTicker}>Only show threads containing tickers</span>
             </div>
         </div>
     )
