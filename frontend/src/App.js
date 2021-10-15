@@ -59,12 +59,12 @@ function Home() {
         }
     }, []);
 
-    const sortedTickers = Object.keys(currentTickers).map(ticker => {
+    const sortedTickers = currentTickers ? Object.keys(currentTickers).map(ticker => {
         return {
             name: ticker,
             count: currentTickers[ticker]
         }
-    }).sort((a, b) => (b.count - a.count))
+    }).sort((a, b) => (b.count - a.count)) : []
 
     return (
         <div className='main'>

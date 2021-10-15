@@ -4,6 +4,22 @@ import SanitizedHTML from 'react-sanitized-html';
 
 import { FaCog } from 'react-icons/fa'
 
+const badWords = [
+    'fuck',
+    'bitch',
+    'shit',
+    'ass',
+    'cunt',
+    'retard',
+    'rtard',
+    'jerk',
+    'fuk',
+    'kink',
+    'ass'
+]
+const badWordsRegexPattern = `(${badWords.join('|')})`
+const badWordsRegex = new RegExp(badWordsRegexPattern, "gi")
+
 function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
     const [showSettings, setShowSettings] = useState(false)
@@ -25,33 +41,34 @@ function SocketWrapper({ threads }) {
             <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
             <SettingsPane show={showSettings} blockOffensive={blockOffensive} setBlockOffensive={setBlockOffensive}/>
             <Socket threads={threads} isHovering={isHovering}
-                setHover={setIsHovering}
+                setHover={setIsHovering} blockOffensive={blockOffensive}
             />
         </div>
     )
 }
 
 // abstract away the socket component and only update it when mouse is not hovering
-const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
+const Socket = React.memo(function Socket({ threads, isHovering, setHover, blockOffensive }) {
     // Turn thread informations into thread elements
     const postElements = threads?.map(thread => (
-        <RedditPost {...thread} key={thread.body + thread.link}/>
+        <RedditPost {...thread} key={thread.body + thread.link} blockOffensive={blockOffensive}/>
     ))
 
     return (
         <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             {postElements}
             <RedditPost
-                body='<p>Welcome to popular tickers!</p>'
+                body='<p>Welcome to popular tickers bitch!</p>'
                 subreddit='all'
                 author='david'
                 type='comment'
+                blockOffensive={blockOffensive}
             />
         </div>
     );
 }, (prevPros, nextProps) => nextProps.isHovering)
 
-function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
+function RedditPost({ title, body, author, subreddit, link, tickers, type, blockOffensive }) {
     const threadType = title ? 'post' : 'comment'
     // convert tickers to a set
     const tickersSet = new Set(tickers)
@@ -86,8 +103,10 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
                         }
                     })
                     .join('')
-        // body = body.replaceAll(new RegExp(`("|>|^|\\s|\\b)(${[...tickerList, "'"].join('|')})("|<|\\s|$|\\b)`, 'gi'), '$1<b>$2</b>$3')
-        // body = body.replaceAll(new RegExp(`([^a-zA-Z0-9_'&;]|^)(${[...tickerList].join('|')})([^a-zA-Z0-9_'&;]|$)`, 'ig'), '$1<b>$2</b>$3')
+
+        if (blockOffensive) {
+            body = body.replaceAll(badWordsRegex, "******")
+        }
     }
 
     if (type === 'textpost') {
@@ -133,7 +152,6 @@ function SettingsPane({ show, blockOffensive, setBlockOffensive }) {
         setBlockOffensive(val => !val)
     }
 
-    console.log(blockOffensive)
     return (
         <div
             className={`settingsPane ${show ? '' : 'hideOverflow'}`}
