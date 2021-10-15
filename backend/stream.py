@@ -15,8 +15,6 @@ import praw
 from tickers import ticker_list, extract_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 
-
-
 app = Flask(__name__)
 CORS(app)
 app.config['SECRET_KEY'] = os.environ.get("mongo_URI")
@@ -74,6 +72,9 @@ def reddit_thread():
         except praw.requests.exceptions.HTTPError as e:
             print(e)
 
-if __name__ == '__main__':
+def main():
     threading.Thread(target=flask_thread).start()
     threading.Thread(target=reddit_thread).start()
+
+if __name__ == '__main__':
+    main()
