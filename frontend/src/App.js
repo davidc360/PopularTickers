@@ -12,11 +12,12 @@ import EnterSecret from './components/EnterSecret'
 import io from "socket.io-client"
 import axios from 'axios'
 
-const ENDPOINT = "http://127.0.0.1:5000"
+const ENDPOINT = process.env.REACT_APP_ENDPOINT
 axios.defaults.headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
 }
+console.log('env endpoint: ' + process.env.REACT_APP_ENDPOINT)
 
 function Home() {
     const [threads, setThreads] = useState([])
@@ -47,10 +48,10 @@ function Home() {
         socket.on("new thread", handleNewThread)
 
         // get current tickers and their stats
-        axios.get(ENDPOINT + '/stats').then(res => setCurrentTickers(res.data))
+        axios.get(ENDPOINT + 'stats').then(res => setCurrentTickers(res.data))
         
         // get last thread on first render
-        axios.get(ENDPOINT + '/last_thread').then(res => setThreads([res.data]))
+        axios.get(ENDPOINT + 'last_thread').then(res => setThreads([res.data]))
 
         return () => {
             // turning of socket listner on unmount
