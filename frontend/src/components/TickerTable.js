@@ -3,7 +3,7 @@ import "./TickerTable.sass"
 
 // tickers: sorted by mentions in App.js
 export default function({ tickers }) {
-    const tickerRows = tickers.map(ticker => {
+    const tickerRows = tickers?.map(ticker => {
         if (ticker.count <= 2) return
         return <TickerRow ticker={ticker['name']} count={ticker['count']} key={ticker['name']}/>
     })

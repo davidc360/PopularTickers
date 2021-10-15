@@ -22,7 +22,7 @@ function SocketWrapper({ threads }) {
 // abstract away the socket component and only update it when mouse is not hovering
 const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     // Turn thread informations into thread elements
-    const postElements = threads.map(thread => (
+    const postElements = threads?.map(thread => (
         <RedditPost {...thread} key={thread.body + thread.link}/>
     ))
 
