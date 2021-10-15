@@ -2,8 +2,15 @@ import './Socket.sass'
 import React, { useState, useEffect, useRef } from "react"
 import SanitizedHTML from 'react-sanitized-html';
 
+import { FaCog } from 'react-icons/fa'
+
 function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
+    const [showSettings, setShowSettings] = useState(false)
+
+    function toggleShowSettings() {
+        setShowSettings(show => !show)
+    }
 
     useEffect(() => {
         console.log(threads)
@@ -11,7 +18,11 @@ function SocketWrapper({ threads }) {
 
     return (
         <div className='threadsCtn'>
-            <h1 className='center'>{isHovering ? '(Paused on Mouse Hover)' : 'Latest'}</h1>
+            <h1 className='center title'>
+                {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
+            </h1>
+            <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
+            <SettingsPane show={showSettings} />
             <Socket threads={threads} isHovering={isHovering}
                 setHover={setIsHovering}
             />
@@ -29,6 +40,12 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover }) {
     return (
         <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             {postElements}
+            <RedditPost
+                body='<p>Welcome to popular tickers!</p>'
+                subreddit='all'
+                author='david'
+                type='comment'
+            />
         </div>
     );
 }, (prevPros, nextProps) => nextProps.isHovering)
@@ -90,6 +107,30 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
                 <a href={'https://www.reddit.com'+link+(threadType === 'comment' ? '?context=8&depth=9' : '')} target='_blank'> <span>{threadType}</span> </a>
                 <a href={'https://www.reddit.com/r/'+subreddit} target='_blank'> <span className='threadSub'>r/{subreddit}</span> </a>
                 <a href={'https://www.reddit.com/u/'+author} target='_blank'> <span className='threadAuthor'>u/{author}</span> </a>
+            </div>
+        </div>
+    )
+}
+
+function SettingsPane({ show }) {
+    const showSty = {
+        maxHeight: '2em',
+        transition: 'max-height 0.5s ease',
+        overflow: 'hidden'
+    }
+    
+    const noshowSty = {
+        maxHeight: 0,
+        transition: 'max-height 0.5s ease'
+    }
+
+    return (
+        <div
+            className={`settingsPane ${show ? '' : 'hideOverflow'}`}
+            style={show ? showSty : noshowSty}
+        >
+            <div style={{ marginRight: '1em' }}>
+                These are settings
             </div>
         </div>
     )
