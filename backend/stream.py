@@ -73,9 +73,9 @@ def reddit_thread():
         except praw.requests.exceptions.HTTPError as e:
             print(e)
 
-def main():
-    threading.Thread(target=reddit_thread).start()
-    threading.Thread(target=flask_thread).start()
+# def main():
+threading.Thread(target=reddit_thread).start()
+threading.Thread(target=flask_thread).start()
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+    # main()
