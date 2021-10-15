@@ -4,7 +4,7 @@ import SanitizedHTML from 'react-sanitized-html';
 
 import { FaCog } from 'react-icons/fa'
 
-const badWords = [
+const badWords = new Set([
     'fuck',
     'bitch',
     'shit',
@@ -16,8 +16,9 @@ const badWords = [
     'fuk',
     'kink',
     'ass'
-]
-const badWordsRegexPattern = `(${badWords.join('|')})`
+])
+
+const badWordsRegexPattern = `(${[...badWords].join('|')})`
 const badWordsRegex = new RegExp(badWordsRegexPattern, "gi")
 
 function SocketWrapper({ threads }) {
@@ -77,7 +78,10 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, block
     );
 }, (prevPros, nextProps) => nextProps.isHovering)
 
-function RedditPost({ title, body, author, subreddit, link, tickers, type, blockOffensive }) {
+function RedditPost({ title, body, author, subreddit, link, tickers, type, blockOffensive, onlyShowIfTicker }) {
+    if (onlyShowIfTicker && (!tickers || tickers.length == 0)) {
+        return null
+    }
     const threadType = title ? 'post' : 'comment'
     // convert tickers to a set
     const tickersSet = new Set(tickers)
@@ -114,7 +118,14 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
                     .join('')
 
         if (blockOffensive) {
-            body = body.replaceAll(badWordsRegex, "******")
+            body = body.split(badWordsRegex)
+                        .map(word => {
+                            if (badWords.has(word)) {
+                                return new Array(word.length).fill('*').join('')
+                            } else {
+                                return word
+                            }
+                        }).join('')
         }
     }
 
