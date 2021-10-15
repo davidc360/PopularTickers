@@ -39,7 +39,7 @@ def returnLastThread():
     return json.dumps(last_thread, default=str)
 
 def flask_thread():
-    socketio.run(app)
+    socketio.run(app, host='0.0.0.0')
 
 def reddit_thread():
     subreddit = reddit.subreddit('+'.join(subreddits_to_monitor))
