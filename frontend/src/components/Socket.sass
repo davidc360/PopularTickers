@@ -63,6 +63,16 @@ blockquote
     justify-content: flex-end
     margin-top: 1rem
 
-.hideOverflow
-    *
-        overflow: hidden
+.setting
+    margin-right: 0.3em
+
+    &:hover
+        span
+            cursor: pointer
+            color: gray
+
+        input[type=checkbox]
+            // you cannot directly change the color or background of a checkbox, using filter for workaround
+            filter: invert(100%) hue-rotate(18deg) brightness(1.7)
+
+

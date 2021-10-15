@@ -7,6 +7,7 @@ import { FaCog } from 'react-icons/fa'
 function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
     const [showSettings, setShowSettings] = useState(false)
+    const [blockOffensive, setBlockOffensive] = useState(false)
 
     function toggleShowSettings() {
         setShowSettings(show => !show)
@@ -22,7 +23,7 @@ function SocketWrapper({ threads }) {
                 {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
             </h1>
             <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
-            <SettingsPane show={showSettings} />
+            <SettingsPane show={showSettings} blockOffensive={blockOffensive} setBlockOffensive={setBlockOffensive}/>
             <Socket threads={threads} isHovering={isHovering}
                 setHover={setIsHovering}
             />
@@ -112,7 +113,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type }) {
     )
 }
 
-function SettingsPane({ show }) {
+function SettingsPane({ show, blockOffensive, setBlockOffensive }) {
     const showSty = {
         maxHeight: '2em',
         transition: 'max-height 0.5s ease',
@@ -124,13 +125,24 @@ function SettingsPane({ show }) {
         transition: 'max-height 0.5s ease'
     }
 
+    function handleCheckboxChecked(e) {
+        setBlockOffensive(e.target.checked)
+    }
+
+    function toggleCheckbox() {
+        setBlockOffensive(val => !val)
+    }
+
+    console.log(blockOffensive)
     return (
         <div
             className={`settingsPane ${show ? '' : 'hideOverflow'}`}
             style={show ? showSty : noshowSty}
         >
-            <div style={{ marginRight: '1em' }}>
-                These are settings
+            <div className='setting'>
+                <input type="checkbox" checked={blockOffensive}
+                    onChange={(handleCheckboxChecked)} />
+                <span onClick={toggleCheckbox}>Block offensive words</span>
             </div>
         </div>
     )
