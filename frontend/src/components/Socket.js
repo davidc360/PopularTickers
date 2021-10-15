@@ -67,7 +67,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, block
         <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             {postElements}
             <RedditPost
-                body='<p>Welcome to popular tickers bitch!</p>'
+                body='<p>Welcome to popular tickers!</p>'
                 subreddit='all'
                 author='david'
                 type='comment'
