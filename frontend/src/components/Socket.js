@@ -41,7 +41,7 @@ function SocketWrapper({ threads }) {
                 {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
             </h1>
             <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
-            <SettingsPane show={showSettings}
+            <SettingsPane show={showSettings} setShow={setShowSettings}
                 blockOffensive={blockOffensive} setBlockOffensive={setBlockOffensive}
                 onlyShowIfTicker={onlyShowIfTicker} setOnlyShowIfTicker={setOnlyShowIfTicker}
             />
@@ -152,7 +152,8 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
     )
 }
 
-function SettingsPane({ show, blockOffensive, setBlockOffensive, onlyShowIfTicker, setOnlyShowIfTicker }) {
+function SettingsPane({ show, setShow, blockOffensive, setBlockOffensive, onlyShowIfTicker, setOnlyShowIfTicker }) {
+    const hovering = useRef(false)
     const showSty = {
         maxHeight: '2.5em',
         transition: 'max-height 0.5s ease',
@@ -163,6 +164,22 @@ function SettingsPane({ show, blockOffensive, setBlockOffensive, onlyShowIfTicke
         maxHeight: 0,
         transition: 'max-height 0.5s ease'
     }
+
+    function setTimeoutToClose() {
+        setTimeout(() => {
+            if (hovering.current === false) {
+                setShow(false)
+            } else {
+                setTimeoutToClose()
+            }
+        }, 2000)
+    }
+
+    useEffect(() => {
+        if (show === true) {
+            setTimeoutToClose()
+        }
+    }, [show])
 
     function updateBlockOffensive(e) {
         setBlockOffensive(e.target.checked)
@@ -184,6 +201,8 @@ function SettingsPane({ show, blockOffensive, setBlockOffensive, onlyShowIfTicke
         <div
             className={`settingsPane ${show ? '' : 'hideOverflow'}`}
             style={show ? showSty : noshowSty}
+            onMouseEnter={() => { hovering.current = true }}
+            onMouseLeave={() => { hovering.current = false }}
         >
             <div className='setting'>
                 <input type="checkbox" checked={blockOffensive}
