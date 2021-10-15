@@ -102,7 +102,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
         body = body
                     // spit words by non alphabetic chars and ' (apostrophe)
                     // the split keeps the deliminator
-                    .split(/([<> .,-?])/gi)
+                    .split(/([?<> .,-])/gi)
                     .map(word => {
                         // remove punctuation
                         let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")

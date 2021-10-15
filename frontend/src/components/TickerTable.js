@@ -15,8 +15,7 @@ export default function({ tickers }) {
                 <tr>
                     <th className='left'>Ticker</th>
                     <th>Mentions</th>
-                    <th>Positive</th>
-                    <th>Negative</th>
+                    <th>Strength</th>
                     <th>Positive %</th>
                     <th>Neutral %</th>
                     <th>Negative %</th>
@@ -66,7 +65,6 @@ function TickerRow({ ticker, count, pos_sent, pos_sent_cnt=0, neg_sent, neg_sent
             </td>
             <td>{count}</td>
             <td>{pos_strength || 0}</td>
-            <td>{neg_strength || 0}</td>
             <td>{sent_percent(pos_sent_cnt) || "0%"}</td>
             <td>{sent_percent(neut_sent_cnt) || "0%"}</td>
             <td>{sent_percent(neg_sent_cnt) || "0%"}</td>

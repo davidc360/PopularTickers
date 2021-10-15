@@ -14,6 +14,7 @@ from flask_socketio import SocketIO, send, emit
 import praw
 from tickers import ticker_list, extract_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
+from textblob import TextBlob
 
 app = Flask(__name__)
 CORS(app)
@@ -47,12 +48,14 @@ def reddit_thread():
     submission_stream = subreddit.stream.submissions(pause_after=-1, skip_existing=True)
     
     def process_and_emit(thread):
-        print(thread)
         if thread is None:
             return True
         if should_filter(thread):
             return True
+
         thread_info = get_thread_info(thread)
+        print(thread_info)
+        thread_info['sentiment'] = TextBlob(thread_info['body']).sentiment.polarity
         socketio.emit('new thread', thread_info)
         mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
 
@@ -70,7 +73,7 @@ def reddit_thread():
             for thread in submission_stream:
                 if process_and_emit(thread):
                     break
-        except praw.requests.exceptions.HTTPError as e:
+        except praw.exceptions.APIException as e:
             print(e)
 
 # def main():

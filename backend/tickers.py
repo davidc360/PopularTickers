@@ -60,7 +60,8 @@ ticker_list = get_ticker_list()
 
 def extract_tickers(text):
     # words = text.split()
-    words = re.split('([<> .,-?])', text)
+    words = re.split('([?<> .,-])', text)
+    print(words)
     new_words = []
 
     # filter words:
