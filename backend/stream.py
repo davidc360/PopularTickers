@@ -24,7 +24,7 @@ app.config["MONGO_URI"] =  mongo_URI
 mongo = PyMongo(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-SSL_fullchain_path = os.environ.get("SLL_fullchain_path")
+SSL_fullchain_path = os.environ.get("SSL_fullchain_path")
 SSL_privatekey_path = os.environ.get("SSL_privatekey_path")
 SSL_context = None if SSL_fullchain_path is None or SSL_privatekey_path is None else (SSL_fullchain_path, SSL_privatekey_path)
 
