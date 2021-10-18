@@ -36,11 +36,19 @@ function Home() {
             console.log('current tickers', currentTickersRef.current)
 
             // update ticker mention count
+            // add 1 to the mention if ticker already in list
+            // if not, initiate it
             if (data.tickers.length > 0) {
                 const updatedTickerList = { ...currentTickersRef.current }
                 data.tickers.forEach(ticker => {
-                    const curCount = updatedTickerList[ticker] || 0
-                    updatedTickerList[ticker] = curCount + 1
+                    // if ticker exists
+                    if (ticker in updatedTickerList) {
+                        updatedTickerList[ticker]['mentions'] += 1
+                    } else {
+                        updatedTickerList[ticker]= {
+                            mentions: 1
+                        }
+                    }
                 })
                 setCurrentTickers(updatedTickerList)
             }
@@ -59,10 +67,12 @@ function Home() {
         }
     }, []);
 
+    console.log('cur tick', currentTickers)
+
     const sortedTickers = currentTickers ? Object.keys(currentTickers).map(ticker => {
         return {
             name: ticker,
-            count: currentTickers[ticker]
+            count: currentTickers[ticker]['mentions']
         }
     }).sort((a, b) => (b.count - a.count)) : []
 

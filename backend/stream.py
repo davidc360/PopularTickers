@@ -31,8 +31,14 @@ def tickerlist():
 @app.route('/stats')
 def returnStats():
     current_time_str = get_current_time()
-    ticker = mongo.db.tickers.find_one({ current_time_str: {'$exists': 1} })
-    return json.dumps(ticker[current_time_str] if ticker is not None else None, default=str)
+    document = mongo.db.tickers.find_one(
+        { current_time_str: {'$exists': 1} },
+        { f'{current_time_str}': 1}
+    )
+    if document is None:
+        return json.dumps(None)
+
+    return json.dumps(document[current_time_str], default=str)
 
 @app.route('/last_thread')
 def returnLastThread():
@@ -54,15 +60,32 @@ def reddit_thread():
             return True
 
         thread_info = get_thread_info(thread)
-        print(thread_info)
+        # print(thread_info)
+        print('new thread')
         thread_info['sentiment'] = TextBlob(thread_info['body']).sentiment.polarity
         socketio.emit('new thread', thread_info)
         mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
 
         current_time_str = get_current_time()
-        for ticker in thread_info['tickers']:        
-            mongo.db.tickers.update_one({current_time_str: {'$exists': 1}}, {
-                    '$inc': {f'{current_time_str}.{ticker}': 1}
+        for ticker in thread_info['tickers']:
+            documents_that_contain_ticker = mongo.db.tickers.find_one(
+                { current_time_str: {'$exists': 1 } }, 
+                { f'{current_time_str}.{ticker}': 1 }
+            )
+            current_count = 0
+            # if didn't find document with the timeframe
+            if (documents_that_contain_ticker is None or current_time_str not in documents_that_contain_ticker):
+                pass
+            # if found the timeframe but didn't find the ticker
+            elif (ticker not in documents_that_contain_ticker[current_time_str]):
+                pass
+            # else get the current count
+            else:
+                current_count =  documents_that_contain_ticker[current_time_str][ticker]['mentions']
+
+            print('setting in db')
+            mongo.db.tickers.update({}, {
+                    '$set': {f'{current_time_str}.{ticker}': {'mentions': current_count+1}}
             }, upsert=True)
 
     while True:
