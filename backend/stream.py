@@ -24,6 +24,10 @@ app.config["MONGO_URI"] =  mongo_URI
 mongo = PyMongo(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+SSL_fullchain_path = os.environ.get("SLL_fullchain_path")
+SSL_privatekey_path = os.environ.get("SSL_privatekey_path")
+SSL_context = None if SSL_fullchain_path is None or SSL_privatekey_path is None else (SSL_fullchain_path, SSL_privatekey_path)
+
 @app.route('/tickerlist')
 def tickerlist():
     return json.dumps(list(ticker_list))
@@ -46,7 +50,7 @@ def returnLastThread():
     return json.dumps(last_thread, default=str)
 
 def flask_thread():
-    socketio.run(app, host='0.0.0.0')
+    socketio.run(app, host='0.0.0.0', SSL_context=SSL_context)
 
 def reddit_thread():
     subreddit = reddit.subreddit('+'.join(subreddits_to_monitor))
