@@ -2,4 +2,4 @@
 
 Sentiment analysis on stocks being talked about on Reddit.
 
-Live demo: https://reddittickers.vercel.app/
+Live demo: https://reddit-stocks.vercel.app/
