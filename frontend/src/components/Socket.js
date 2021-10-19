@@ -24,7 +24,7 @@ const badWordsRegex = new RegExp(badWordsRegexPattern, "gi")
 function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
     const [showSettings, setShowSettings] = useState(false)
-    const [blockOffensive, setBlockOffensive] = useState(false)
+    const [blockOffensive, setBlockOffensive] = useState(true)
     const [onlyShowIfTicker, setOnlyShowIfTicker] = useState(false)
 
     function toggleShowSettings() {
