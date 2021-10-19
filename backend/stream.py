@@ -50,7 +50,7 @@ def returnLastThread():
     return json.dumps(last_thread, default=str)
 
 def flask_thread():
-    socketio.run(app, host='0.0.0.0', SSL_context=SSL_context)
+    socketio.run(app, host='0.0.0.0', ssl_context=SSL_context)
 
 def reddit_thread():
     subreddit = reddit.subreddit('+'.join(subreddits_to_monitor))
