@@ -89,13 +89,13 @@ def reddit_thread():
                 current_mentions =  documents_that_contain_ticker[current_time_str][ticker]['mentions']
                 current_sentiment =  documents_that_contain_ticker[current_time_str][ticker]['sentiment']
 
+            new_mentions = current_mentions + 1
             def calculate_new_sentiment():
                 if current_mentions == 0:
                     return thread_sentiment
                 sentiment_sum = current_sentiment * current_mentions
                 new_sentiment = (sentiment_sum + thread_sentiment)/new_mentions
                 return new_sentiment
-            new_mentions = current_mentions + 1
             new_sentiment = calculate_new_sentiment()
 
             # update info in db
