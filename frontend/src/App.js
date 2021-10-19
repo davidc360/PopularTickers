@@ -33,21 +33,21 @@ function Home() {
         const handleNewThread = data => {
             setThreads(threads => [data, ...threads])
 
-            console.log('current tickers', currentTickersRef.current)
+            // console.log('current tickers', currentTickersRef.current)
 
             // update ticker mention count
             // add 1 to the mention if ticker already in list
             // if not, initiate it
             if (data.tickers.length > 0) {
                 const updatedTickerList = { ...currentTickersRef.current }
-                data.tickers.forEach(ticker => {
-                    // if ticker exists
-                    if (ticker in updatedTickerList) {
-                        updatedTickerList[ticker]['mentions'] += 1
-                    } else {
-                        updatedTickerList[ticker]= {
-                            mentions: 1
-                        }
+
+                data.tickers.forEach(tickerName => {
+                    const mentions = data['mentions']
+                    const sentiment = data['sentiment']                    // if ticker exists
+                   
+                    updatedTickerList[tickerName]= {
+                        mentions,
+                        sentiment
                     }
                 })
                 setCurrentTickers(updatedTickerList)
@@ -67,14 +67,14 @@ function Home() {
         }
     }, []);
 
-    console.log('cur tick', currentTickers)
-
-    const sortedTickers = currentTickers ? Object.keys(currentTickers).map(ticker => {
-        return {
+    // map the object that contains all tickers to add the 'name' field
+    // then sort it based on count
+    const sortedTickers = currentTickers ? Object.keys(currentTickers).map(ticker => (
+        {
             name: ticker,
-            count: currentTickers[ticker]['mentions']
+            ...currentTickers[ticker]
         }
-    }).sort((a, b) => (b.count - a.count)) : []
+    )).sort((a, b) => (b.mentions - a.mentions)) : []
 
     return (
         <div className='main'>

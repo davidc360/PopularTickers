@@ -108,11 +108,11 @@ def reddit_thread():
                     }
             }, upsert=True)
 
-            # emit to client
-            thread_info['mentions'] = new_mentions
-            thread_info['sentiment'] = new_sentiment
-            socketio.emit('new thread', thread_info)
-            mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
+        # emit to client
+        thread_info['mentions'] = new_mentions
+        thread_info['sentiment'] = new_sentiment
+        socketio.emit('new thread', thread_info)
+        mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
 
     # run listener for new threads, if True is returned, skip
     while True:
@@ -120,7 +120,7 @@ def reddit_thread():
             for thread in comment_stream:
                 if process_and_emit(thread):
                     break
-            for thread in submission_stream :
+            for thread in submission_stream:
                 if process_and_emit(thread):
                     break
         except praw.exceptions.APIException as e:
