@@ -73,6 +73,10 @@ function Home() {
             ...currentTickers[ticker]
         }
     )).sort((a, b) => (b.mentions - a.mentions)) : []
+
+    // limit tickers to 1000
+    // allow users to set this in the futures
+    if(sortedTickers.length > 1000) sortedTickers.length = 1000
     console.log(sortedTickers)
 
     return (
