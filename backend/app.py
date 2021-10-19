@@ -58,46 +58,69 @@ def reddit_thread():
     submission_stream = subreddit.stream.submissions(pause_after=-1, skip_existing=True)
     
     def process_and_emit(thread):
+        # skip if None or thread should be filtered
         if thread is None:
             return True
         if should_filter(thread):
             return True
 
         thread_info = get_thread_info(thread)
-        # print(thread_info)
+        
         print('new thread')
-        thread_info['sentiment'] = TextBlob(thread_info['body']).sentiment.polarity
-        socketio.emit('new thread', thread_info)
-        mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
 
+        thread_sentiment = TextBlob(thread_info['body']).sentiment.polarity
         current_time_str = get_current_time()
+        
         for ticker in thread_info['tickers']:
             documents_that_contain_ticker = mongo.db.tickers.find_one(
                 { current_time_str: {'$exists': 1 } }, 
                 { f'{current_time_str}.{ticker}': 1 }
             )
-            current_count = 0
+            current_mentions = 0
+            current_sentiment = 0
             # if didn't find document with the timeframe
             if (documents_that_contain_ticker is None or current_time_str not in documents_that_contain_ticker):
                 pass
             # if found the timeframe but didn't find the ticker
             elif (ticker not in documents_that_contain_ticker[current_time_str]):
                 pass
-            # else get the current count
+            # else if found
             else:
-                current_count =  documents_that_contain_ticker[current_time_str][ticker]['mentions']
+                current_mentions =  documents_that_contain_ticker[current_time_str][ticker]['mentions']
+                current_sentiment =  documents_that_contain_ticker[current_time_str][ticker]['sentiment']
 
-            print('setting in db')
+            def calculate_new_sentiment():
+                if current_mentions == 0:
+                    return thread_sentiment
+                sentiment_sum = current_sentiment * current_mentions
+                new_sentiment = (sentiment_sum + thread_sentiment)/new_mentions
+                return new_sentiment
+            new_mentions = current_mentions + 1
+            new_sentiment = calculate_new_sentiment()
+
+            # update info in db
             mongo.db.tickers.update({}, {
-                    '$set': {f'{current_time_str}.{ticker}': {'mentions': current_count+1}}
+                    '$set': {
+                        f'{current_time_str}.{ticker}': {
+                            'mentions': new_mentions,
+                            'sentiment': new_sentiment
+                        }
+                    }
             }, upsert=True)
 
+            # emit to client
+            thread_info['mentions'] = new_mentions
+            thread_info['sentiment'] = new_sentiment
+            socketio.emit('new thread', thread_info)
+            mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
+
+    # run listener for new threads, if True is returned, skip
     while True:
         try:
             for thread in comment_stream:
                 if process_and_emit(thread):
                     break
-            for thread in submission_stream:
+            for thread in submission_stream :
                 if process_and_emit(thread):
                     break
         except praw.exceptions.APIException as e:
