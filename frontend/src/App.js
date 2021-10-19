@@ -41,13 +41,10 @@ function Home() {
             if (data.tickers.length > 0) {
                 const updatedTickerList = { ...currentTickersRef.current }
 
-                data.tickers.forEach(tickerName => {
-                    const mentions = data['mentions']
-                    const sentiment = data['sentiment']                    // if ticker exists
-                   
-                    updatedTickerList[tickerName]= {
-                        mentions,
-                        sentiment
+                data.tickers.forEach(ticker => { 
+                    updatedTickerList[ticker['name']] = {
+                        mentions: ticker['mentions'],
+                        sentiment: ticker['sentiment']
                     }
                 })
                 setCurrentTickers(updatedTickerList)
@@ -69,12 +66,14 @@ function Home() {
 
     // map the object that contains all tickers to add the 'name' field
     // then sort it based on count
+    // console.log(currentTickers)
     const sortedTickers = currentTickers ? Object.keys(currentTickers).map(ticker => (
         {
             name: ticker,
             ...currentTickers[ticker]
         }
     )).sort((a, b) => (b.mentions - a.mentions)) : []
+    console.log(sortedTickers)
 
     return (
         <div className='main'>

@@ -84,7 +84,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
     }
     const threadType = title ? 'post' : 'comment'
     // convert tickers to a set
-    const tickersSet = new Set(tickers)
+    const tickersSet = new Set(tickers?.map(ticker => ticker['name']))
 
     // bold tickers found in the content
     // first strip word from punctuation, and transform to uppercase

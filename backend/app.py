@@ -70,6 +70,8 @@ def reddit_thread():
 
         thread_sentiment = TextBlob(thread_info['body']).sentiment.polarity
         current_time_str = get_current_time()
+
+        tickers_with_info = []
         
         for ticker in thread_info['tickers']:
             documents_that_contain_ticker = mongo.db.tickers.find_one(
@@ -89,28 +91,32 @@ def reddit_thread():
                 current_mentions =  documents_that_contain_ticker[current_time_str][ticker]['mentions']
                 current_sentiment =  documents_that_contain_ticker[current_time_str][ticker]['sentiment']
 
-            new_mentions = current_mentions + 1
             def calculate_new_sentiment():
                 if current_mentions == 0:
                     return thread_sentiment
                 sentiment_sum = current_sentiment * current_mentions
                 new_sentiment = (sentiment_sum + thread_sentiment)/new_mentions
                 return new_sentiment
+            new_mentions = current_mentions + 1
             new_sentiment = calculate_new_sentiment()
+
+            ticker_info = {
+                'name': ticker,
+                'mentions': new_mentions,
+                'sentiment': new_sentiment
+            }
 
             # update info in db
             mongo.db.tickers.update({}, {
                     '$set': {
-                        f'{current_time_str}.{ticker}': {
-                            'mentions': new_mentions,
-                            'sentiment': new_sentiment
-                        }
+                        f'{current_time_str}.{ticker}': ticker_info
                     }
             }, upsert=True)
 
+            tickers_with_info.append(ticker_info)
+
         # emit to client
-        thread_info['mentions'] = new_mentions
-        thread_info['sentiment'] = new_sentiment
+        thread_info['tickers'] = tickers_with_info
         socketio.emit('new thread', thread_info)
         mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
 
