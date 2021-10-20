@@ -1,6 +1,7 @@
 import os
 import json
 import threading
+from datetime import datetime, timedelta
 from helpers import get_current_time
 
 from dotenv import load_dotenv
@@ -34,20 +35,52 @@ def tickerlist():
 
 @app.route('/stats')
 def returnStats():
-    timeframe  = request.args.get('timeframe')
+    hours_to_query  = int(request.args.get('hours') or 0)
     current_time_str = get_current_time()
     document = {}
 
-    if timeframe is None:
+    if hours_to_query is None:
         document = mongo.db.tickers.find_one(
-            { 'time': { '$eq': current_time_str} },
-            # { 'tickers': 1 }
+            { 'time': { '$gte': current_time_str} }
         )
     else:
-        document = mongo.db.tickers.find_one(
-            { current_time_str: {'$exists': 1}  }
+        # get oldest timeframe we would query
+        timeframe_cutoff = (current_time_str) - timedelta(hours=hours_to_query)
+        timeframe_cutoff = timeframe_cutoff
+
+        # query all ticker lists until cut off date
+        document = mongo.db.tickers.find(
+            { f'time': {'$gte': timeframe_cutoff}  }
         )
-        return json.dumps(document[current_time_str]['_id'])
+        document = list(document)
+        if len(document) == 0:
+            return json.dumps(None)
+        
+        # combine all timeframe's data
+        tickers_combined = {}
+        
+        for timeframe in document:
+            for tickerName in timeframe['tickers']:
+                ticker_info =  timeframe['tickers'][tickerName]
+                if tickerName not in tickers_combined:
+                    tickers_combined[tickerName] = {
+                        "name": tickerName,
+                        "mentions": 0,
+                        "sentiment": 0,
+                        "positive_count": 0,
+                        "negative_count": 0,
+                        "neutral_count": 0,
+                    }
+
+                tickers_combined[tickerName]['mentions'] += ticker_info['mentions']
+                tickers_combined[tickerName]['sentiment'] = (tickers_combined[tickerName]['mentions'] * tickers_combined[tickerName]['sentiment'] + ticker_info['mentions'] * ticker_info['sentiment']) / tickers_combined[tickerName]['mentions']
+                tickers_combined[tickerName]['positive_count'] += ticker_info['positive_count'] 
+                tickers_combined[tickerName]['negative_count'] += ticker_info['negative_count'] 
+                tickers_combined[tickerName]['neutral_count'] += ticker_info['neutral_count'] 
+
+        tickers_combined = list(tickers_combined.values())
+
+        return json.dumps(tickers_combined)
 
     # return tickers in the found document, or none
     return json.dumps(document.get('tickers', None), default=str)
