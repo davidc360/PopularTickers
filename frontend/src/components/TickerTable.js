@@ -3,35 +3,33 @@ import "./TickerTable.sass"
 
 // tickers: sorted by mentions in App.js
 export default function ({ tickers }) {
-    const tickerRows = tickers?.map(ticker => {
-        // filter mentions less than 3
-        // if (ticker.count <= 2) return
-        return <TickerRow
-            key={ticker['name']}
-            { ...ticker }
-            // ticker={ticker['name']}
-            // mentions={ticker['mentions']}
-            // sentiment={ticker['sentiment']}
-        />
-    })
+    const tickerRows = tickers?.map(ticker => (
+        <TickerRow key={ticker['name']} { ...ticker } />
+    ))
+
     return (
         <div className="stats">
             <h1>Stats</h1>
-            <table className='table'>
-                <thead>
-                <tr>
-                    <th className='left'>Ticker</th>
-                    <th>Mentions</th>
-                    <th>Sentiment</th>
-                    <th>Positive</th>
-                    <th>Neutral</th>
-                    <th>Negative</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {tickerRows}
-                </tbody>
-            </table>
+            {tickers.length === 0 ? (
+                <div>Not data in this time frame yet.</div>
+            ) : (
+                <table className='table'>
+                    <thead>
+                    <tr>
+                        <th className='left'>Ticker</th>
+                        <th>Mentions</th>
+                        <th>Sentiment</th>
+                        <th>Positive</th>
+                        <th>Neutral</th>
+                        <th>Negative</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {tickerRows}
+                    </tbody>
+                </table>
+            )}
+            
         </div>
     )    
 }
