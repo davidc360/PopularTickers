@@ -68,12 +68,9 @@ function Home() {
     // map the object that contains all tickers to add the 'name' field
     // then sort it based on count
     // console.log(currentTickers)
-    const sortedTickers = currentTickers ? Object.keys(currentTickers).map(ticker => (
-        {
-            name: ticker,
-            ...currentTickers[ticker]
-        }
-    )).sort((a, b) => (b.mentions - a.mentions)) : []
+    const sortedTickers = currentTickers ?
+        Object.values(currentTickers).sort((a, b) => (b.mentions - a.mentions)) 
+        : []
 
     // limit tickers to 1000
     // allow users to set this in the futures

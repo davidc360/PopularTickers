@@ -34,15 +34,23 @@ def tickerlist():
 
 @app.route('/stats')
 def returnStats():
+    timeframe  = request.args.get('timeframe')
     current_time_str = get_current_time()
-    document = mongo.db.tickers.find_one(
-        { current_time_str: {'$exists': 1} },
-        { f'{current_time_str}': 1}
-    )
-    if document is None:
-        return json.dumps(None)
+    document = {}
 
-    return json.dumps(document[current_time_str], default=str)
+    if timeframe is None:
+        document = mongo.db.tickers.find_one(
+            { 'time': { '$eq': current_time_str} },
+            # { 'tickers': 1 }
+        )
+    else:
+        document = mongo.db.tickers.find_one(
+            { current_time_str: {'$exists': 1}  }
+        )
+        return json.dumps(document[current_time_str]['_id'])
+
+    # return tickers in the found document, or none
+    return json.dumps(document.get('tickers', None), default=str)
 
 @app.route('/last_thread')
 def returnLastThread():
@@ -75,8 +83,7 @@ def reddit_thread():
         
         for ticker in thread_info['tickers']:
             documents_that_contain_ticker = mongo.db.tickers.find_one(
-                { current_time_str: {'$exists': 1 } }, 
-                { f'{current_time_str}.{ticker}': 1 }
+                { 'time': { '$eq': current_time_str} }
             )
 
             current_mentions = 0
@@ -85,18 +92,18 @@ def reddit_thread():
             neutral_count = 0
             negative_count = 0
             # if didn't find document with the timeframe
-            if (documents_that_contain_ticker is None or current_time_str not in documents_that_contain_ticker):
+            if (documents_that_contain_ticker is None):
                 pass
             # if found the timeframe but didn't find the ticker
-            elif (ticker not in documents_that_contain_ticker[current_time_str]):
+            elif (ticker not in documents_that_contain_ticker['tickers']):
                 pass
             # else if found
             else:
-                current_mentions =  documents_that_contain_ticker[current_time_str][ticker]['mentions']
-                current_sentiment =  documents_that_contain_ticker[current_time_str][ticker]['sentiment']
-                positive_count = documents_that_contain_ticker[current_time_str][ticker]['positive_count']
-                neutral_count = documents_that_contain_ticker[current_time_str][ticker]['neutral_count']
-                negative_count = documents_that_contain_ticker[current_time_str][ticker]['negative_count']
+                current_mentions =  documents_that_contain_ticker['tickers'][ticker]['mentions']
+                current_sentiment =  documents_that_contain_ticker['tickers'][ticker]['sentiment']
+                positive_count = documents_that_contain_ticker['tickers'][ticker]['positive_count']
+                neutral_count = documents_that_contain_ticker['tickers'][ticker]['neutral_count']
+                negative_count = documents_that_contain_ticker['tickers'][ticker]['negative_count']
 
             def calculate_new_sentiment():
                 if current_mentions == 0:
@@ -124,11 +131,14 @@ def reddit_thread():
             }
 
             # update info in db
-            mongo.db.tickers.update({}, {
+            mongo.db.tickers.update(
+                { "time": current_time_str }, 
+                {
                     '$set': {
-                        f'{current_time_str}.{ticker}': ticker_info
+                        f'tickers.{ticker}': ticker_info
                     }
-            }, upsert=True)
+                }
+            , upsert=True)
 
             tickers_with_info.append(ticker_info)
 
