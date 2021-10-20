@@ -67,7 +67,7 @@ function TickerRow({ name, mentions, sentiment, positive_count, neutral_count, n
                 }
             </td>
             <td>{mentions}</td>
-            <td>{sentiment >= 0 ? '+' : ''}{Math.round(sentiment*100)}</td>
+            <td>{sentiment >= 0 ? '+' : ''}{(sentiment*100).toFixed(2)}</td>
             <td>{Math.round((positive_count / mentions)*100)}%</td>
             <td>{Math.round((neutral_count / mentions)*100)}%</td>
             <td>{Math.round((negative_count / mentions)*100)}%</td>
