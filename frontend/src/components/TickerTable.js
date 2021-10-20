@@ -2,11 +2,17 @@ import React, { useEffect, useState } from 'react'
 import "./TickerTable.sass"
 
 // tickers: sorted by mentions in App.js
-export default function({ tickers }) {
+export default function ({ tickers }) {
     const tickerRows = tickers?.map(ticker => {
         // filter mentions less than 3
         // if (ticker.count <= 2) return
-        return <TickerRow ticker={ticker['name']} mentions={ticker['mentions']} sentiment={ticker['sentiment']} key={ticker['name']}/>
+        return <TickerRow
+            key={ticker['name']}
+            { ...ticker }
+            // ticker={ticker['name']}
+            // mentions={ticker['mentions']}
+            // sentiment={ticker['sentiment']}
+        />
     })
     return (
         <div className="stats">
@@ -17,9 +23,9 @@ export default function({ tickers }) {
                     <th className='left'>Ticker</th>
                     <th>Mentions</th>
                     <th>Sentiment</th>
-                    <th>Positive %</th>
-                    <th>Neutral %</th>
-                    <th>Negative %</th>
+                    <th>Positive</th>
+                    <th>Neutral</th>
+                    <th>Negative</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -30,7 +36,7 @@ export default function({ tickers }) {
     )    
 }
 
-function TickerRow({ ticker, mentions, sentiment}) {
+function TickerRow({ name, mentions, sentiment, positive_count, neutral_count, negative_count }) {
 
     // const sent_percent = sent_cnt => sent_cnt > 0 ? (sent_cnt / total_sent_cnt * 100).toFixed(2) + '%' : null
 
@@ -45,7 +51,7 @@ function TickerRow({ ticker, mentions, sentiment}) {
     // }
 
     function googleTicker() {
-        window.open("https://www.google.com/search?q=" + ticker,'_blank')
+        window.open("https://www.google.com/search?q=" + name,'_blank')
     }
 
     return (
@@ -57,14 +63,14 @@ function TickerRow({ ticker, mentions, sentiment}) {
                     //     //     {ticker}
                     //     // </ToolTip>
                     //     : ticker
-                    ticker
+                    name
                 }
             </td>
             <td>{mentions}</td>
             <td>{sentiment >= 0 ? '+' : ''}{Math.round(sentiment*100)}</td>
-            <td>{ "0%"}</td>
-            <td>{"0%"}</td>
-            <td>{"0%"}</td>
+            <td>{Math.round((positive_count / mentions)*100)}%</td>
+            <td>{Math.round((neutral_count / mentions)*100)}%</td>
+            <td>{Math.round((negative_count / mentions)*100)}%</td>
             {
                     // blacklistSecret &&
                     //     <ToolTip tooltext={'Blacklist this ticker'} className={styles.remove} onClick={blacklistTicker}>

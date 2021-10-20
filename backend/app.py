@@ -66,7 +66,7 @@ def reddit_thread():
 
         thread_info = get_thread_info(thread)
         
-        print('new thread')
+        print(thread.id)
 
         thread_sentiment = TextBlob(thread_info['body']).sentiment.polarity
         current_time_str = get_current_time()
@@ -78,8 +78,12 @@ def reddit_thread():
                 { current_time_str: {'$exists': 1 } }, 
                 { f'{current_time_str}.{ticker}': 1 }
             )
+
             current_mentions = 0
             current_sentiment = 0
+            positive_count = 0
+            neutral_count = 0
+            negative_count = 0
             # if didn't find document with the timeframe
             if (documents_that_contain_ticker is None or current_time_str not in documents_that_contain_ticker):
                 pass
@@ -90,6 +94,9 @@ def reddit_thread():
             else:
                 current_mentions =  documents_that_contain_ticker[current_time_str][ticker]['mentions']
                 current_sentiment =  documents_that_contain_ticker[current_time_str][ticker]['sentiment']
+                positive_count = documents_that_contain_ticker[current_time_str][ticker]['positive_count']
+                neutral_count = documents_that_contain_ticker[current_time_str][ticker]['neutral_count']
+                negative_count = documents_that_contain_ticker[current_time_str][ticker]['negative_count']
 
             def calculate_new_sentiment():
                 if current_mentions == 0:
@@ -97,13 +104,23 @@ def reddit_thread():
                 sentiment_sum = current_sentiment * current_mentions
                 new_sentiment = (sentiment_sum + thread_sentiment)/new_mentions
                 return new_sentiment
+
             new_mentions = current_mentions + 1
             new_sentiment = calculate_new_sentiment()
+            if thread_sentiment > 0:
+                positive_count += 1
+            elif thread_sentiment < 0:
+                negative_count += 1
+            elif thread_sentiment == 0:
+                neutral_count += 1
 
             ticker_info = {
                 'name': ticker,
                 'mentions': new_mentions,
-                'sentiment': new_sentiment
+                'sentiment': new_sentiment,
+                'positive_count': positive_count,
+                'neutral_count': neutral_count,
+                'negative_count': negative_count
             }
 
             # update info in db

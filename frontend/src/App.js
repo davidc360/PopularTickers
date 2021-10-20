@@ -43,8 +43,9 @@ function Home() {
 
                 data.tickers.forEach(ticker => { 
                     updatedTickerList[ticker['name']] = {
-                        mentions: ticker['mentions'],
-                        sentiment: ticker['sentiment']
+                        // mentions: ticker['mentions'],
+                        // sentiment: ticker['sentiment']
+                        ...ticker
                     }
                 })
                 setCurrentTickers(updatedTickerList)
@@ -76,7 +77,8 @@ function Home() {
 
     // limit tickers to 1000
     // allow users to set this in the futures
-    if(sortedTickers.length > 1000) sortedTickers.length = 1000
+    if(sortedTickers.length > 500) sortedTickers.length = 500
+    if(threads.length > 500) setThreads(threads.slice(0, 500))
     console.log(sortedTickers)
 
     return (
