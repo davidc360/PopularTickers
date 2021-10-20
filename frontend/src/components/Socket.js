@@ -43,7 +43,6 @@ function SocketWrapper({ threads }) {
     return (
         <div className='threadsCtn'>
             <h1 className='center title threadsHeading'>
-                <div></div>
                 <div>
                     {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
                 </div>
