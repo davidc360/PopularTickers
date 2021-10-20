@@ -6,6 +6,7 @@ import { FaCog } from 'react-icons/fa'
 
 const badWords = new Set([
     'fuck',
+    'fucking',
     'bitch',
     'shit',
     'ass',
@@ -14,8 +15,12 @@ const badWords = new Set([
     'rtard',
     'jerk',
     'fuk',
+    'fuckin',
+    'fukin',
     'kink',
-    'ass'
+    'ass',
+    'pussy',
+    'cuck'
 ])
 
 const badWordsRegexPattern = `(${[...badWords].join('|')})`
@@ -106,6 +111,12 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
                     .map(word => {
                         // remove punctuation
                         let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")
+
+                        // if filter bad words,turn bad words into asterisks
+                        if (blockOffensive && badWords.has(word_transformed.toLowerCase())) {
+                            return new Array(word.length).fill('*').join('')
+                        }
+
                         // if letter is over 2 letters long, uppercase it
                         if (word_transformed.length > 2)
                             word_transformed = word_transformed.toUpperCase()
@@ -117,16 +128,22 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
                     })
                     .join('')
 
-        if (blockOffensive) {
-            body = body.split(badWordsRegex)
-                        .map(word => {
-                            if (badWords.has(word)) {
-                                return new Array(word.length).fill('*').join('')
-                            } else {
-                                return word
-                            }
-                        }).join('')
-        }
+        // if (blockOffensive) {
+        //         body.split(/([?<> .,-])/gi)
+        //                 .map(word => {
+        //                     // remove punctuation
+        //                     let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")
+        //                     // if letter is over 2 letters long, uppercase it
+        //                     if (word_transformed.length > 2)
+        //                         word_transformed = word_transformed.toUpperCase()
+        //                     if (tickersSet.has(word_transformed)) {
+        //                         return `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
+        //                     } else {
+        //                         return word
+        //                     }
+        //                 })
+        //                 .join('')
+        // }
     }
 
     if (type === 'textpost') {
