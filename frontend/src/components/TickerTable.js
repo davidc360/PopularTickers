@@ -4,7 +4,9 @@ import "./TickerTable.sass"
 // tickers: sorted by mentions in App.js
 export default function ({ tickers }) {
     const tickerRows = tickers?.map(ticker => (
-        <TickerRow key={ticker['name']} { ...ticker } />
+        ticker.mentions > 2 ?
+            <TickerRow key={ticker['name']} {...ticker} />
+            : null
     ))
 
     return (
@@ -57,14 +59,7 @@ function TickerRow({ name, mentions, sentiment, positive_count, neutral_count, n
     return (
         <tr>
             <td className='tickerName' onClick={googleTicker}>
-                {
-                    // blacklistSecret ?
-                    //     // <ToolTip tooltext={'Open chart'} >
-                    //     //     {ticker}
-                    //     // </ToolTip>
-                    //     : ticker
-                    name
-                }
+                { name }
             </td>
             <td>{mentions}</td>
             <td>{sentiment >= 0 ? '+' : ''}{(sentiment*100).toFixed(2)}</td>
