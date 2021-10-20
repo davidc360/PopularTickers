@@ -10,26 +10,28 @@ export default function ({ tickers }) {
     return (
         <div className="stats">
             <h1>Stats</h1>
-            {tickers.length === 0 ? (
-                <div>Not data in this time frame yet.</div>
-            ) : (
                 <table className='table'>
                     <thead>
-                    <tr>
-                        <th className='left'>Ticker</th>
-                        <th>Mentions</th>
-                        <th>Sentiment</th>
-                        <th>Positive</th>
-                        <th>Neutral</th>
-                        <th>Negative</th>
-                    </tr>
+                        <tr>
+                            <th className='left'>Ticker</th>
+                            <th>Mentions</th>
+                            <th>Sentiment</th>
+                            <th>Positive</th>
+                            <th>Neutral</th>
+                            <th>Negative</th>
+                        </tr>
                     </thead>
-                    <tbody>
-                        {tickerRows}
-                    </tbody>
+                    { tickers.length === 0 ? (
+                        <div>
+                            <br />
+                            Not data in this time frame yet.
+                        </div>
+                    ) : (
+                        <tbody>
+                            { tickerRows }
+                        </tbody>
+                    )}
                 </table>
-            )}
-            
         </div>
     )    
 }

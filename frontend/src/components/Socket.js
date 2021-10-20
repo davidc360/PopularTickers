@@ -42,10 +42,13 @@ function SocketWrapper({ threads }) {
 
     return (
         <div className='threadsCtn'>
-            <h1 className='center title'>
-                {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
+            <h1 className='center title threadsHeading'>
+                <div></div>
+                <div>
+                    {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
+                </div>
+                <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
             </h1>
-            <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
             <SettingsPane show={showSettings} setShow={setShowSettings}
                 blockOffensive={blockOffensive} setBlockOffensive={setBlockOffensive}
                 onlyShowIfTicker={onlyShowIfTicker} setOnlyShowIfTicker={setOnlyShowIfTicker}
@@ -127,23 +130,6 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
                         }
                     })
                     .join('')
-
-        // if (blockOffensive) {
-        //         body.split(/([?<> .,-])/gi)
-        //                 .map(word => {
-        //                     // remove punctuation
-        //                     let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")
-        //                     // if letter is over 2 letters long, uppercase it
-        //                     if (word_transformed.length > 2)
-        //                         word_transformed = word_transformed.toUpperCase()
-        //                     if (tickersSet.has(word_transformed)) {
-        //                         return `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
-        //                     } else {
-        //                         return word
-        //                     }
-        //                 })
-        //                 .join('')
-        // }
     }
 
     if (type === 'textpost') {
@@ -181,15 +167,17 @@ function SettingsPane({ show, setShow, blockOffensive, setBlockOffensive, onlySh
         maxHeight: 0,
         transition: 'max-height 0.5s ease'
     }
-
+    
+    const timeouts = useRef([])
     function setTimeoutToClose() {
-        setTimeout(() => {
+        timeouts.current.forEach(clearTimeout)
+        timeouts.current.push(setTimeout(() => {
             if (hovering.current === false) {
                 setShow(false)
             } else {
                 setTimeoutToClose()
             }
-        }, 2000)
+        }, 2000))
     }
 
     useEffect(() => {
