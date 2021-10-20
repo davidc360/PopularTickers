@@ -45,7 +45,7 @@ def returnStats():
         )
     else:
         # get oldest timeframe we would query
-        timeframe_cutoff = (current_time_str) - timedelta(hours=hours_to_query)
+        timeframe_cutoff = (current_time_str) - timedelta(hours=max(hours_to_query-1, 0))
         timeframe_cutoff = timeframe_cutoff
 
         # query all ticker lists until cut off date
