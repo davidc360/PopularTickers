@@ -43,7 +43,7 @@ function SocketWrapper({ threads }) {
     return (
         <div className='threadsCtn'>
             <h1 className='center title threadsHeading'>
-                <div>
+                <div className='titleWrapper'>
                     {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
                 </div>
                 <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>

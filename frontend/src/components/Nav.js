@@ -9,13 +9,13 @@ export default function () {
         <nav className='nav'>
             <h1 className='logo'>Popular Tickers</h1>
             <ul className='nav-links'>
-                <Link to={'/'}>
+                <Link to={'/'} target="_self">
                     <li className='nav-link'>Home</li>
                 </Link>
-                <Link to={'/about'}>
+                <Link to={'/about'} target="_self">
                     <li className='nav-link'>About</li>
                 </Link>
-                <Link to={'/contact'}>
+                <Link to={'/contact'} target="_self">
                     <li className='nav-link'>Contact</li>
                 </Link>
             </ul>

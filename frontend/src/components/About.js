@@ -10,7 +10,7 @@ export default function () {
             </h1>
 
             <br/>
-            <a href="/">👈 Back to home</a>
+            <a href="/" target="_self">👈 Back to home</a>
         </div>
     )
 }
