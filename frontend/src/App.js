@@ -81,9 +81,9 @@ function Home() {
                     currentInfo['sentiment'] = (currentInfo['sentiment'] * (currentInfo['mentions'] - 1) + data.sentiment) / currentInfo['mentions'] 
 
                     // update sentiment %
-                    if (data.sentiment > 1) {
+                    if (data.sentiment > 0) {
                         currentInfo['positive_count'] += 1    
-                    } else if (data.sentiment < 1) {
+                    } else if (data.sentiment < 0) {
                         currentInfo['negative_count'] += 1    
                     } else if (data.sentiment === 0) {
                         currentInfo['neutral_count'] += 1    
