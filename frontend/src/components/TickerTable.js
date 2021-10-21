@@ -2,22 +2,32 @@ import React, { useEffect, useState } from 'react'
 import "./TickerTable.sass"
 
 // tickers: sorted by mentions in App.js
-export default function ({ tickers }) {
+export default function ({ tickers, queryHour, setQueryHour }) {
     // console.log('ticker table: ', tickers)
-    const tickerRows = tickers?.map(ticker => (
-        ticker.mentions > 2 ?
-            <TickerRow key={ticker['name']} {...ticker} />
-            : null
-    ))
+    const tickerRows = []
+    tickers?.forEach(ticker => {
+        if (ticker.mentions > 2) {
+            tickerRows.push(<TickerRow key={ticker['name']} {...ticker} />)
+        }
+    })
+
     // console.log('ticker rows: ', tickerRows)
 
     return (
         <div className="stats">
             <h1>Stats</h1>
                 <table className='table'>
+                    <ul className='hour-selectors'>
+                        <li className={`hour-selector nav-link ${queryHour === 1 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(1)}>1H</li>
+                        <li className={`hour-selector nav-link ${queryHour === 4 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(4)}>4H</li>
+                        <li className={`hour-selector nav-link ${queryHour === 12 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(12)}>12H</li>
+                        <li className={`hour-selector nav-link ${queryHour === 24 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(24)}>1D</li>
+                        <li className={`hour-selector nav-link ${queryHour === 72 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(72)}>3D</li>
+                        <li className={`hour-selector nav-link ${queryHour === 168 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(168)}>1W</li>
+                    </ul>
                     <thead>
                         <tr>
-                            <th className='left'>Ticker</th>
+                            <th className='tickerName'>Ticker</th>
                             <th>Mentions</th>
                             <th>Sentiment</th>
                             <th>Positive</th>
@@ -25,7 +35,7 @@ export default function ({ tickers }) {
                             <th>Negative</th>
                         </tr>
                     </thead>
-                    { tickers.length === 0 ? (
+                    { tickerRows.length === 0 ? (
                         <div>
                             <br />
                             Not data in this time frame yet.

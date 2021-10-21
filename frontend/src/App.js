@@ -27,6 +27,17 @@ function Home() {
     // using ref to work around access the state in socket handler
     // see https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
 
+    const [queryHour, setQueryHour] = useState(1)
+    function updateTickerList(hour) {
+        console.log(hour)
+        axios.get(ENDPOINT + 'stats?hours=' + hour).then(res => setCurrentTickers(res.data))
+    }
+
+    // update ticker list every time the query hour changes
+    useEffect(() => {
+        updateTickerList(queryHour)
+    }, [queryHour])
+
     useEffect(() => {
         // set up websockets
         const socket = io(ENDPOINT);
@@ -39,23 +50,20 @@ function Home() {
             // add 1 to the mention if ticker already in list
             // if not, initiate it
             if (data.tickers.length > 0) {
-                const updatedTickerList = { ...currentTickersRef.current }
+                // const updatedTickerList = { ...currentTickersRef.current }
 
-                data.tickers.forEach(ticker => { 
-                    updatedTickerList[ticker['name']] = {
-                        // mentions: ticker['mentions'],
-                        // sentiment: ticker['sentiment']
-                        ...ticker
-                    }
-                })
-                setCurrentTickers(updatedTickerList)
+                // data.tickers.forEach(ticker => { 
+                //     updatedTickerList[ticker['name']] = {
+                //         // mentions: ticker['mentions'],
+                //         // sentiment: ticker['sentiment']
+                //         ...ticker
+                //     }
+                // })
+                // setCurrentTickers(updatedTickerList)
             }
         }
         socket.on("new thread", handleNewThread)
 
-        // get current tickers and their stats
-        axios.get(ENDPOINT + 'stats').then(res => setCurrentTickers(res.data))
-        
         // get last thread on first render
         axios.get(ENDPOINT + 'last_thread').then(res => setThreads([res.data]))
 
@@ -80,7 +88,7 @@ function Home() {
 
     return (
         <div className='main'>
-            <TickerTable tickers={ sortedTickers }/>
+            <TickerTable tickers={sortedTickers} setQueryHour={setQueryHour} queryHour={queryHour}/>
             <Socket threads={ threads }/>
         </div>
     )

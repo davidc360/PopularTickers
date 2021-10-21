@@ -112,7 +112,6 @@ def reddit_thread():
         thread_sentiment = TextBlob(thread_info['body']).sentiment.polarity
         current_time_str = get_current_time()
 
-        tickers_with_info = []
         
         for ticker in thread_info['tickers']:
             documents_that_contain_ticker = mongo.db.tickers.find_one(
@@ -173,10 +172,7 @@ def reddit_thread():
                 }
             , upsert=True)
 
-            tickers_with_info.append(ticker_info)
-
         # emit to client
-        thread_info['tickers'] = tickers_with_info
         socketio.emit('new thread', thread_info)
         mongo.db.last_thread.replace_one({}, thread_info, upsert=True)
 
