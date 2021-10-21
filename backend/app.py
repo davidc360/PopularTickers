@@ -110,6 +110,7 @@ def reddit_thread():
         print(thread.id)
 
         thread_sentiment = TextBlob(thread_info['body']).sentiment.polarity
+        thread_info['sentiment'] = thread_sentiment
         current_time_str = get_current_time()
 
         

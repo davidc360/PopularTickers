@@ -59,12 +59,34 @@ function Home() {
                 const updatedTickerList = { ...currentTickersRef.current }
 
                 data.tickers.forEach(ticker => {
+                    let currentInfo
                     if (ticker in updatedTickerList) {
-                        updatedTickerList[ticker]['mentions'] += 1
+                        currentInfo = updatedTickerList[ticker]
                     } else {
-                        updatedTickerList[ticker] = {
-                            'mentions': 1
+                        currentInfo = {
+                            'name': ticker,
+                            'mentions': 0,
+                            'sentiment': 0,
+                            'positive_count': 0,
+                            'negative_count': 0,
+                            'neutral_count': 0,
                         }
+                    }
+
+                    
+                    // update ticker's mention count
+                    currentInfo['mentions'] += 1
+                    
+                    // update sentiment
+                    currentInfo['sentiment'] = (currentInfo['sentiment'] * (currentInfo['mentions'] - 1) + data.sentiment) / currentInfo['mentions'] 
+
+                    // update sentiment %
+                    if (data.sentiment > 1) {
+                        currentInfo['positive_count'] += 1    
+                    } else if (data.sentiment < 1) {
+                        currentInfo['negative_count'] += 1    
+                    } else if (data.sentiment === 0) {
+                        currentInfo['neutral_count'] += 1    
                     }
                 })
                 setCurrentTickers(updatedTickerList)
