@@ -16,36 +16,36 @@ export default function ({ tickers, queryHour, setQueryHour }) {
     return (
         <div className="stats">
             <h1>Stats</h1>
-                <table className='table'>
-                    <ul className='hour-selectors'>
-                        <li className={`hour-selector nav-link ${queryHour === 1 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(1)}>1H</li>
-                        <li className={`hour-selector nav-link ${queryHour === 4 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(4)}>4H</li>
-                        <li className={`hour-selector nav-link ${queryHour === 12 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(12)}>12H</li>
-                        <li className={`hour-selector nav-link ${queryHour === 24 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(24)}>1D</li>
-                        <li className={`hour-selector nav-link ${queryHour === 72 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(72)}>3D</li>
-                        <li className={`hour-selector nav-link ${queryHour === 168 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(168)}>1W</li>
-                    </ul>
-                    <thead>
-                        <tr>
-                            <th className='tickerName'>Ticker</th>
-                            <th>Mentions</th>
-                            <th>Sentiment</th>
-                            <th>Positive</th>
-                            <th>Neutral</th>
-                            <th>Negative</th>
-                        </tr>
-                    </thead>
-                    { tickerRows.length === 0 ? (
-                        <div>
-                            <br />
-                            Not data in this time frame yet.
-                        </div>
-                    ) : (
-                        <tbody>
-                            { tickerRows }
-                        </tbody>
-                    )}
-                </table>
+            <ul className='hour-selectors'>
+                <li className={`hour-selector nav-link ${queryHour === 1 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(1)}>1H</li>
+                <li className={`hour-selector nav-link ${queryHour === 4 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(4)}>4H</li>
+                <li className={`hour-selector nav-link ${queryHour === 12 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(12)}>12H</li>
+                <li className={`hour-selector nav-link ${queryHour === 24 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(24)}>1D</li>
+                <li className={`hour-selector nav-link ${queryHour === 72 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(72)}>3D</li>
+                <li className={`hour-selector nav-link ${queryHour === 168 ? 'hour-selected' : ''}`} onClick={()=>setQueryHour(168)}>1W</li>
+            </ul>
+            <table className='table'>
+                <thead>
+                    <tr>
+                        <th className='tickerName'>Ticker</th>
+                        <th>Mentions</th>
+                        <th>Sentiment</th>
+                        <th>Positive</th>
+                        <th>Neutral</th>
+                        <th>Negative</th>
+                    </tr>
+                </thead>
+                { tickerRows.length === 0 ? (
+                    <div>
+                        <br />
+                        Not data in this time frame yet.
+                    </div>
+                ) : (
+                    <tbody>
+                        { tickerRows }
+                    </tbody>
+                )}
+            </table>
         </div>
     )    
 }
