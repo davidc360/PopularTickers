@@ -1,4 +1,4 @@
-# RedditStocks
+# Popular Tickers
 
 Popular Tickers is a web app that uses WebSockets to deliver stats and content related to investing that are being posted to Reddit in real time. 
 
