@@ -155,7 +155,7 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
                 <SanitizedHTML html={body} className='threadBody'/>      
             )}
             <div className="threadInfo">
-                <a href={'https://www.reddit.com' + link + (threadType === 'comment' ? '?context=8&depth=9' : '')} target='_blank'> <span>link <FaExternalLinkAlt style={ { fontSize: '0.8em' }}/></span> </a>
+                <a href={'https://www.reddit.com' + link + (threadType === 'comment' ? '?context=8&depth=9' : '')} target='_blank'> <span>link <FaExternalLinkAlt className='linkIcon'/></span> </a>
                 <a href={'https://www.reddit.com'+link+(threadType === 'comment' ? '?context=8&depth=9' : '')} target='_blank'> <span>{threadType}</span> </a>
                 <a href={'https://www.reddit.com/r/'+subreddit} target='_blank'> <span className='threadSub'>r/{subreddit}</span> </a>
                 <a href={'https://www.reddit.com/u/'+author} target='_blank'> <span className='threadAuthor'>u/{author}</span> </a>
