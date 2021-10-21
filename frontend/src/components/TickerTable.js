@@ -6,10 +6,11 @@ export default function ({ tickers, queryHour, setQueryHour }) {
     // console.log('ticker table: ', tickers)
     const tickerRows = []
     tickers?.forEach(ticker => {
-        if (ticker.mentions > 2) {
+        // if (ticker.mentions > 2) {
             tickerRows.push(<TickerRow key={ticker['name']} {...ticker} />)
-        }
+        // }
     })
+    if(tickerRows.length > 300) tickerRows.length = 300
 
     // console.log('ticker rows: ', tickerRows)
 

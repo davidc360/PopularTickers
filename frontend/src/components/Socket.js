@@ -144,11 +144,11 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
 
     return (
         <div className='thread'>
-            <div className='threadTitle'>
+            {title && <div className='threadTitle'>
                 <a href={'https://www.reddit.com' + link} target='_blank'>
-                    <SanitizedHTML html={title} className='threadBody'/>
+                    <SanitizedHTML html={title} className='threadBody' />
                 </a>
-            </div>
+            </div>}
             {type === ('linkpost') ? (
                 <div className='threadBody'>{body}</div>
             ) : (
