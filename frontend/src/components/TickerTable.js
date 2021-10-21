@@ -30,7 +30,7 @@ export default function ({ tickers, queryHour, setQueryHour }) {
                     <tr>
                         <th className='tickerName'>Ticker</th>
                         <th>Mentions</th>
-                        <th>Sentiment</th>
+                        <th>Strength</th>
                         <th>Positive</th>
                         <th>Neutral</th>
                         <th>Negative</th>
@@ -79,7 +79,7 @@ function TickerRow({ name, mentions, sentiment, positive_count, neutral_count, n
                 { name }
             </td>
             <td>{mentions}</td>
-            <td>{sentiment >= 0 ? '+' : ''}{(sentiment*100).toFixed(2)}</td>
+            <td>{(sentiment*100).toFixed(2)}</td>
             <td>{Math.round((positive_count / mentions)*100)}%</td>
             <td>{Math.round((neutral_count / mentions)*100)}%</td>
             <td>{Math.round((negative_count / mentions)*100)}%</td>
