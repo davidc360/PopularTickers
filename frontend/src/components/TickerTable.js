@@ -36,10 +36,14 @@ export default function ({ tickers, queryHour, setQueryHour }) {
                     </tr>
                 </thead>
                 { tickerRows.length === 0 ? (
-                    <div>
-                        <br />
-                        Not data in this time frame yet.
-                    </div>
+                    <tbody>
+                        <tr>
+                            <td colSpan="6">
+                                <br />
+                                Not data in this time frame yet.
+                            </td>
+                        </tr>
+                    </tbody>
                 ) : (
                     <tbody>
                         { tickerRows }

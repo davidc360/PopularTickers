@@ -30,7 +30,13 @@ function Home() {
     const [queryHour, setQueryHour] = useState(1)
     function updateTickerList(hour) {
         console.log(hour)
-        axios.get(ENDPOINT + 'stats?hours=' + hour).then(res => setCurrentTickers(res.data))
+        axios.get(ENDPOINT + 'stats?hours=' + hour).then(res => {
+            const ticker_obj = {}
+            res.data.forEach(ticker => {
+                ticker_obj[ticker['name']] = ticker 
+            })
+            setCurrentTickers(ticker_obj)
+        })
     }
 
     // update ticker list every time the query hour changes
@@ -50,16 +56,18 @@ function Home() {
             // add 1 to the mention if ticker already in list
             // if not, initiate it
             if (data.tickers.length > 0) {
-                // const updatedTickerList = { ...currentTickersRef.current }
+                const updatedTickerList = { ...currentTickersRef.current }
 
-                // data.tickers.forEach(ticker => { 
-                //     updatedTickerList[ticker['name']] = {
-                //         // mentions: ticker['mentions'],
-                //         // sentiment: ticker['sentiment']
-                //         ...ticker
-                //     }
-                // })
-                // setCurrentTickers(updatedTickerList)
+                data.tickers.forEach(ticker => {
+                    if (ticker in updatedTickerList) {
+                        updatedTickerList[ticker]['mentions'] += 1
+                    } else {
+                        updatedTickerList[ticker] = {
+                            'mentions': 1
+                        }
+                    }
+                })
+                setCurrentTickers(updatedTickerList)
             }
         }
         socket.on("new thread", handleNewThread)
