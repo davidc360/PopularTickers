@@ -70,7 +70,7 @@ function TickerRow({ name, mentions, sentiment, positive_count, neutral_count, n
     // }
 
     function googleTicker() {
-        window.open("https://www.google.com/search?q=" + name,'_blank')
+        window.open("https://www.google.com/search?q=" + name + "+stock",'_blank')
     }
 
     return (
