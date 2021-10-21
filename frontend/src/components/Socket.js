@@ -86,18 +86,45 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, block
 }, (prevPros, nextProps) => nextProps.isHovering)
 
 function RedditPost({ title, body, author, subreddit, link, tickers, type, blockOffensive, onlyShowIfTicker }) {
+    // if only show threads containing tickers and there aren't any tickers, return null
     if (onlyShowIfTicker && (!tickers || tickers.length == 0)) {
         return null
     }
+
     const threadType = title ? 'post' : 'comment'
     // convert tickers to a set
     const tickersSet = new Set(tickers)
 
-    // bold tickers found in the content
+    // bold and link to chart for tickers found in the content
+    // first split the words
     // first strip word from punctuation, and transform to uppercase
-    // then check if the ticker list
-    // console.log(type, body, link)
-    // console.log(tickerList.has("->".replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, "").replace(/<.+?>/g, "").toUpperCase()))
+    // then check if word is a bad word and if we need to filter it
+    // then check if the ticker list contains the word
+    function addLinkAndFilter(text) {
+        // split into words by the following chars:
+        // the split keeps the deliminator 
+        return text.split(/([?<> .,-])/gi)
+                .map(word => {
+                    // remove punctuation
+                    let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")
+
+                    // if filter bad words,turn bad words into asterisks
+                    if (blockOffensive && badWords.has(word_transformed.toLowerCase())) {
+                        return new Array(word.length).fill('*').join('')
+                    }
+
+                    // if letter is over 2 letters long, uppercase it
+                    if (word_transformed.length > 2)
+                        word_transformed = word_transformed.toUpperCase()
+                    if (tickersSet.has(word_transformed)) {
+                        return `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
+                    } else {
+                        return word
+                    }
+                })
+                .join('')
+    }
+
     if (type === 'linkpost') {
         // test if image link or regular link
         if (body.match(/\.(jpeg|jpg|gif|png)$/)) {
@@ -106,42 +133,24 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
             body = <a href={body}>{body}</a>
         }
     } else {
-        body = body
-                    // spit words by non alphabetic chars and ' (apostrophe)
-                    // the split keeps the deliminator
-                    .split(/([?<> .,-])/gi)
-                    .map(word => {
-                        // remove punctuation
-                        let word_transformed = word.replace(/[.,\/#!?$%\^\*;:{}=\-_`~()]/g, "")
-
-                        // if filter bad words,turn bad words into asterisks
-                        if (blockOffensive && badWords.has(word_transformed.toLowerCase())) {
-                            return new Array(word.length).fill('*').join('')
-                        }
-
-                        // if letter is over 2 letters long, uppercase it
-                        if (word_transformed.length > 2)
-                            word_transformed = word_transformed.toUpperCase()
-                        if (tickersSet.has(word_transformed)) {
-                            return `<a href="https://www.google.com/search?q=${word}+stock"><strong>${word}</strong></a>`
-                        } else {
-                            return word
-                        }
-                    })
-                    .join('')
+        body = addLinkAndFilter(body)
     }
 
     if (type === 'textpost') {
         body = `<p>${body}</p>`
+        title = addLinkAndFilter(title)
     }
 
 
     return (
         <div className='thread'>
-            <div className='threadTitle'><a href={'https://www.reddit.com'+link} target='_blank'> {title} </a></div>
+            <div className='threadTitle'>
+                <a href={'https://www.reddit.com' + link} target='_blank'>
+                    <SanitizedHTML html={title} className='threadBody'/>
+                </a>
+            </div>
             {type === ('linkpost') ? (
                 <div className='threadBody'>{body}</div>
-                // <SanitizedHTML html={`<p>${body}</p>`} className='threadBody'/>      
             ) : (
                 <SanitizedHTML html={body} className='threadBody'/>      
             )}
