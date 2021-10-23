@@ -62,7 +62,7 @@ function SocketWrapper({ threads }) {
                 />
                 Pause
             </div>
-            <Socket threads={threads} isHovering={isHovering}
+            <Socket threads={threads} isHovering={isHovering} paused={paused}
                 setHover={setIsHovering} blockOffensive={blockOffensive}
                 onlyShowIfTicker={onlyShowIfTicker}
             />
@@ -71,7 +71,7 @@ function SocketWrapper({ threads }) {
 }
 
 // abstract away the socket component and only update it when mouse is not hovering
-const Socket = React.memo(function Socket({ threads, isHovering, setHover, blockOffensive, onlyShowIfTicker }) {
+const Socket = React.memo(function Socket({ threads, isHovering, setHover, paused, blockOffensive, onlyShowIfTicker }) {
     // Turn thread informations into thread elements
     const postElements = threads?.map(thread => (
         <RedditPost {...thread}
