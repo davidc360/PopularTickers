@@ -32,8 +32,14 @@ a
 .main
     display: flex
     justify-content: center
-    gap: 110px
-    grid-gap: 110px
+
+@media only screen and (min-width: 1025px)
+    .main
+        >:first-child
+            margin-right: 110px
+    // gap does not work in mobile, using margin instead
+    // gap: 110px
+    // grid-gap: 110px
     
 .main-small
     display: flex
