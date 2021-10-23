@@ -18,6 +18,8 @@ from tickers import ticker_list, extract_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 from textblob import TextBlob
 
+elog = open('error.log', 'w')
+
 app = Flask(__name__)
 mail = Mail(app)
 CORS(app)
@@ -189,7 +191,7 @@ def reddit_thread():
                 if process_and_emit(thread):
                     break
         except praw.exceptions.APIException as e:
-            print(e)
+            elog.write(f'{e}\n')
 
 # def main():
 threading.Thread(target=reddit_thread).start()
