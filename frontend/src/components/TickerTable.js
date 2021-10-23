@@ -5,8 +5,8 @@ import "./TickerTable.sass"
 
 // tickers: sorted by mentions in App.js
 export default function ({ tickers, queryHour, setQueryHour }) {
-    const isMobile = useMediaQuery({
-        query: '(min-width: 767px)'
+    const isWide = useMediaQuery({
+        query: '(min-width: 1025px)'
     })
     
     // console.log('ticker table: ', tickers)
@@ -18,7 +18,7 @@ export default function ({ tickers, queryHour, setQueryHour }) {
     })
     if(tickerRows.length > 300) tickerRows.length = 300
 
-    if(!isMobile && tickerRows.length > 20) tickerRows.length = 20
+    if(!isWide && tickerRows.length > 20) tickerRows.length = 20
     // console.log('ticker rows: ', tickerRows)
 
     return (

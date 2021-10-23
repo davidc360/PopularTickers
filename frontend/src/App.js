@@ -29,8 +29,8 @@ function Home() {
     const currentTickersRef = useRef(currentTickers)
     const setCurrentTickers = tickers => { currentTickersRef.current = tickers; _setCurrentTickers(tickers)}
 
-    const isMobile = useMediaQuery({
-        query: '(min-width: 767px)'
+    const isWide = useMediaQuery({
+        query: '(min-width: 1025px)'
     })
 
     const [queryHour, setQueryHour] = useState(1)
@@ -123,7 +123,7 @@ function Home() {
     console.log(sortedTickers)
 
     return (
-        <div className={isMobile ? 'main' : 'main-small'}>
+        <div className={isWide ? 'main' : 'main-small'}>
             <TickerTable tickers={sortedTickers} setQueryHour={setQueryHour} queryHour={queryHour}/>
             <Socket threads={ threads }/>
         </div>
