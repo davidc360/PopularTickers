@@ -38,7 +38,7 @@ function Home() {
         console.log(hour)
         axios.get(ENDPOINT + 'stats?hours=' + hour).then(res => {
             const ticker_obj = {}
-            res.data.forEach(ticker => {
+            res?.data?.forEach(ticker => {
                 ticker_obj[ticker['name']] = ticker 
             })
             setCurrentTickers(ticker_obj)

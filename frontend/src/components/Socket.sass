@@ -72,8 +72,8 @@ blockquote
     display: flex
     flex-direction: column
     align-items: center
-    margin-top: 1rem
-    margin-bottom: 1rem
+    // margin-top: 1rem
+    // margin-bottom: 1rem
 
 .setting
     margin-right: 0.3em
@@ -87,4 +87,13 @@ blockquote
             // you cannot directly change the color or background of a checkbox, using filter for workaround
             filter: invert(100%) hue-rotate(18deg) brightness(1.7)
 
+.pauseButton
+    text-align: center
 
+    &:hover
+        cursor: pointer
+        color: gray
+
+        input[type=checkbox]
+            // you cannot directly change the color or background of a checkbox, using filter for workaround
+            filter: invert(100%) hue-rotate(18deg) brightness(1.7)

@@ -28,6 +28,7 @@ const badWordsRegex = new RegExp(badWordsRegexPattern, "gi")
 
 function SocketWrapper({ threads }) {
     const [isHovering, setIsHovering] = useState(false)
+    const [paused, setPaused] = useState(false)
     const [showSettings, setShowSettings] = useState(false)
     const [blockOffensive, setBlockOffensive] = useState(true)
     const [onlyShowIfTicker, setOnlyShowIfTicker] = useState(false)
@@ -44,7 +45,9 @@ function SocketWrapper({ threads }) {
         <div className='threadsCtn'>
             <h1 className='center title threadsHeading'>
                 <div className='titleWrapper'>
-                    {isHovering ? '(Paused on Mouse Hover)' : 'Latest'}
+                    {paused ? '(Updates paused)' 
+                        : isHovering ? '(Paused on Mouse Hover)'
+                        : 'Latest'}
                 </div>
                 <div className='cogWrapper'> <FaCog className="settingsToggle" onClick={toggleShowSettings} /> </div>
             </h1>
@@ -52,6 +55,13 @@ function SocketWrapper({ threads }) {
                 blockOffensive={blockOffensive} setBlockOffensive={setBlockOffensive}
                 onlyShowIfTicker={onlyShowIfTicker} setOnlyShowIfTicker={setOnlyShowIfTicker}
             />
+            <div className='pauseButton' onClick={()=>setPaused(val => !val)}>
+                <input
+                    checked={isHovering || paused}
+                    type="checkbox"
+                />
+                Pause
+            </div>
             <Socket threads={threads} isHovering={isHovering}
                 setHover={setIsHovering} blockOffensive={blockOffensive}
                 onlyShowIfTicker={onlyShowIfTicker}
@@ -71,7 +81,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, block
     ))
 
     return (
-        <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
+        <div className='threads' onTouchEnd={e => { e.target.click(); e.preventDefault() }} onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             {postElements}
             <RedditPost
                 body='<p>Welcome to popular tickers!</p>'
@@ -83,7 +93,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, block
             />
         </div>
     );
-}, (prevPros, nextProps) => nextProps.isHovering)
+}, (prevPros, nextProps) => (nextProps.isHovering || nextProps.paused))
 
 function RedditPost({ title, body, author, subreddit, link, tickers, type, blockOffensive, onlyShowIfTicker }) {
     // if only show threads containing tickers and there aren't any tickers, return null
@@ -167,14 +177,16 @@ function RedditPost({ title, body, author, subreddit, link, tickers, type, block
 function SettingsPane({ show, setShow, blockOffensive, setBlockOffensive, onlyShowIfTicker, setOnlyShowIfTicker }) {
     const hovering = useRef(false)
     const showSty = {
-        maxHeight: '2.5em',
-        transition: 'max-height 0.5s ease',
-        overflow: 'hidden'
+        maxHeight: '3em',
+        transition: 'all 0.5s ease',
+        overflow: 'hidden',
+        marginTop: '1em',
+        marginBottom: '1em',
     }
     
     const noshowSty = {
         maxHeight: 0,
-        transition: 'max-height 0.5s ease'
+        transition: 'all 0.5s ease'
     }
     
     const timeouts = useRef([])
@@ -231,6 +243,10 @@ function SettingsPane({ show, setShow, blockOffensive, setBlockOffensive, onlySh
             </div>
         </div>
     )
+}
+
+function isTouchScreendevice() {
+    return 'ontouchstart' in window || navigator.maxTouchPoints;      
 }
 
 export default SocketWrapper;
