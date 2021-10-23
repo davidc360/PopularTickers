@@ -188,7 +188,7 @@ def reddit_thread():
             for thread in submission_stream:
                 if process_and_emit(thread):
                     break
-        except praw.exceptions.APIException as e:
+        except Exception as e:
             elog.write(f'{e}\n')
 
 # def main():
