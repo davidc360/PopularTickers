@@ -1,5 +1,6 @@
 import './App.sass';
 import React, { useState, useEffect, useRef } from "react"
+import { useMediaQuery } from 'react-responsive'
 
 import { BrowserRouter, Route, Switch  } from 'react-router-dom'
 import Nav from './components/Nav'
@@ -22,10 +23,15 @@ console.log('env endpoint: ' + process.env.REACT_APP_ENDPOINT)
 function Home() {
     const [threads, setThreads] = useState([])
     const [currentTickers, _setCurrentTickers] = useState({})
-    const currentTickersRef = useRef(currentTickers)
-    const setCurrentTickers = tickers => { currentTickersRef.current = tickers; _setCurrentTickers(tickers)}
+    
     // using ref to work around access the state in socket handler
     // see https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
+    const currentTickersRef = useRef(currentTickers)
+    const setCurrentTickers = tickers => { currentTickersRef.current = tickers; _setCurrentTickers(tickers)}
+
+    const isDesktopOrLaptop = useMediaQuery({
+        query: '(min-width: 1224px)'
+    })
 
     const [queryHour, setQueryHour] = useState(1)
     function updateTickerList(hour) {
@@ -117,7 +123,7 @@ function Home() {
     console.log(sortedTickers)
 
     return (
-        <div className='main'>
+        <div className={isDesktopOrLaptop ? 'main' : 'main-small'}>
             <TickerTable tickers={sortedTickers} setQueryHour={setQueryHour} queryHour={queryHour}/>
             <Socket threads={ threads }/>
         </div>

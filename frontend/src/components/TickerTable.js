@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { useMediaQuery } from 'react-responsive'
+
 import "./TickerTable.sass"
 
 // tickers: sorted by mentions in App.js
 export default function ({ tickers, queryHour, setQueryHour }) {
+    const isDesktopOrLaptop = useMediaQuery({
+        query: '(min-width: 1224px)'
+    })
+    
     // console.log('ticker table: ', tickers)
     const tickerRows = []
     tickers?.forEach(ticker => {
@@ -12,6 +18,7 @@ export default function ({ tickers, queryHour, setQueryHour }) {
     })
     if(tickerRows.length > 300) tickerRows.length = 300
 
+    if(!isDesktopOrLaptop && tickerRows.length > 10) tickerRows.length = 10
     // console.log('ticker rows: ', tickerRows)
 
     return (
