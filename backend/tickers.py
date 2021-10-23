@@ -43,8 +43,8 @@ def get_ticker_list():
     # get list from NASDAQ api, skip first and last line
     # if NASDAQ api fails, use backup file
     try:
-        NASDAQ_REQ = requests.get(NASDAQ_LIST_LINK)
-        OTHER_REQ = requests.get(OTHER_LIST_LINK)
+        NASDAQ_REQ = requests.get(NASDAQ_LIST_LINK, timeout=10)
+        OTHER_REQ = requests.get(OTHER_LIST_LINK, timeout=10)
         ticker_list_plain_text = NASDAQ_REQ.text.splitlines()[1:-1] + OTHER_REQ.text.splitlines()[1:-1]
     except requests.exceptions.RequestException:
         print("NASDAQ did not return ticker lists, using backup list")
