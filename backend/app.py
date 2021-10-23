@@ -9,6 +9,7 @@ load_dotenv()
 
 from flask import Flask, Response, request
 from flask_cors import CORS
+from flask_mail import Mail, Message
 from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
@@ -18,6 +19,7 @@ from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 from textblob import TextBlob
 
 app = Flask(__name__)
+mail = Mail(app)
 CORS(app)
 app.config['SECRET_KEY'] = os.environ.get("mongo_URI")
 mongo_URI = os.environ.get("mongo_URI")
