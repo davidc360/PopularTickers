@@ -94,6 +94,8 @@ function Home() {
                     } else if (data.sentiment === 0) {
                         currentInfo['neutral_count'] += 1    
                     }
+
+                    updatedTickerList[ticker] = currentInfo
                 })
                 setCurrentTickers(updatedTickerList)
             }
