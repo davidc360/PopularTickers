@@ -81,7 +81,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, pause
     ))
 
     return (
-        <div className='threads' onTouchEnd={e => { e.target.click(); e.preventDefault() }} onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
+        <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
             {postElements}
             <RedditPost
                 body='<p>Welcome to popular tickers!</p>'
