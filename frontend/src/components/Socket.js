@@ -81,7 +81,7 @@ const Socket = React.memo(function Socket({ threads, isHovering, setHover, pause
     ))
 
     return (
-        <div className='threads' onMouseOver={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
+        <div className='threads' onMouseOver={!isTouchScreenDevice() ? ()=>setHover(true) : null} onMouseLeave={!isTouchScreenDevice() ? ()=>setHover(false) : null}>
             {postElements}
             <RedditPost
                 body='<p>Welcome to popular tickers!</p>'
@@ -245,7 +245,7 @@ function SettingsPane({ show, setShow, blockOffensive, setBlockOffensive, onlySh
     )
 }
 
-function isTouchScreendevice() {
+function isTouchScreenDevice() {
     return 'ontouchstart' in window || navigator.maxTouchPoints;      
 }
 
