@@ -22,10 +22,11 @@ console.log('env endpoint: ' + process.env.REACT_APP_ENDPOINT)
 
 function Home() {
     const [threads, setThreads] = useState([])
-    const [currentTickers, _setCurrentTickers] = useState({})
+    const lastUpdatedHour = useRef()
     
     // using ref to work around access the state in socket handler
     // see https://medium.com/geographit/accessing-react-state-in-event-listeners-with-usestate-and-useref-hooks-8cceee73c559
+    const [currentTickers, _setCurrentTickers] = useState({})
     const currentTickersRef = useRef(currentTickers)
     const setCurrentTickers = tickers => { currentTickersRef.current = tickers; _setCurrentTickers(tickers)}
 
@@ -35,7 +36,6 @@ function Home() {
 
     const [queryHour, setQueryHour] = useState(1)
     function updateTickerList(hour) {
-        console.log(hour)
         axios.get(ENDPOINT + 'stats?hours=' + hour).then(res => {
             const ticker_obj = {}
             res?.data?.forEach(ticker => {
@@ -50,6 +50,7 @@ function Home() {
         updateTickerList(queryHour)
     }, [queryHour])
 
+    // initialize state and listeners
     useEffect(() => {
         // set up websockets
         const socket = io(ENDPOINT);
@@ -78,15 +79,14 @@ function Home() {
                             'neutral_count': 0,
                         }
                     }
-
                     
                     // update ticker's mention count
                     currentInfo['mentions'] += 1
                     
-                    // update sentiment
+                    // calculate update sentiment
                     currentInfo['sentiment'] = (currentInfo['sentiment'] * (currentInfo['mentions'] - 1) + data.sentiment) / currentInfo['mentions'] 
 
-                    // update sentiment %
+                    // update sentiment count
                     if (data.sentiment > 0) {
                         currentInfo['positive_count'] += 1    
                     } else if (data.sentiment < 0) {
@@ -103,11 +103,32 @@ function Home() {
         socket.on("new thread", handleNewThread)
 
         // get last thread on first render
-        axios.get(ENDPOINT + 'last_thread').then(res => setThreads([res.data]))
+        axios.get(ENDPOINT + 'last_thread').then(res => {
+            lastUpdatedHour.current = new Date().getHours()
+            setThreads([res.data])
+        })
+
+        // set up a timer to update ticker list every hour
+        // set an interval that runs every minute and check if the hour has changed
+        const hourCheckInterval = setInterval(() => {
+            // if ticker list hasn't been initialized, don't update
+            if (lastUpdatedHour.current === undefined) return
+
+            // check if current hour is a new hour
+            const currentHour = new Date().getHours()
+            if (currentHour !== lastUpdatedHour.current) {
+                // update ticker list
+                updateTickerList(queryHour)
+                lastUpdatedHour.current = currentHour
+            }
+        }, 6000)
 
         return () => {
-            // turning of socket listner on unmount
-            socket.off('new thread', handleNewThread);
+            // turning of socket listener on unmount
+            socket.off('new thread', handleNewThread)
+
+            // turning off hour checker on unmount
+            clearInterval(hourCheckInterval)
         }
     }, []);
 
