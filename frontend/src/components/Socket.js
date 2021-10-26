@@ -37,9 +37,9 @@ function SocketWrapper({ threads }) {
         setShowSettings(show => !show)
     }
 
-    useEffect(() => {
-        console.log(threads)
-    }, [threads])
+    // useEffect(() => {
+    //     console.log(threads)
+    // }, [threads])
 
     return (
         <div className='threadsCtn'>
@@ -59,6 +59,7 @@ function SocketWrapper({ threads }) {
                 <input
                     checked={isHovering || paused}
                     type="checkbox"
+                    readOnly
                 />
                 Pause
             </div>

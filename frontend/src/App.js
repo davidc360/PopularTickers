@@ -18,7 +18,7 @@ axios.defaults.headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
 }
-console.log('env endpoint: ' + process.env.REACT_APP_ENDPOINT)
+// console.log('env endpoint: ' + process.env.REACT_APP_ENDPOINT)
 
 function Home() {
     const [threads, setThreads] = useState([])
@@ -144,7 +144,7 @@ function Home() {
     // allow users to set this in the futures
     if(sortedTickers.length > 500) sortedTickers.length = 500
     if(threads.length > 500) setThreads(threads.slice(0, 500))
-    console.log(sortedTickers)
+    // console.log(sortedTickers)
 
     return (
         <div className={isWide ? 'main' : 'main-small'}>
