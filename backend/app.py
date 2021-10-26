@@ -13,7 +13,7 @@ from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
 import praw
-from tickers import ticker_list, extract_tickers
+# from tickers import ticker_list, uppercase_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 from textblob import TextBlob
 
@@ -31,9 +31,15 @@ SSL_fullchain_path = os.environ.get("SSL_fullchain_path")
 SSL_privatekey_path = os.environ.get("SSL_privatekey_path")
 SSL_context = None if SSL_fullchain_path is None or SSL_privatekey_path is None else (SSL_fullchain_path, SSL_privatekey_path)
 
-@app.route('/tickerlist')
-def tickerlist():
-    return json.dumps(list(ticker_list))
+# @app.route('/tickerlist')
+# def tickerlist():
+    # convert the set to an list(array) so that it can be serialized
+    # JSON does not support sets
+    # return json.dumps(list(ticker_list))
+
+# @app.route('/tickerlist_uppercase')
+# def tickerlist_uppercase():
+#     return json.dumps(list(uppercase_tickers))
 
 @app.route('/stats')
 def returnStats():
