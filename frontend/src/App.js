@@ -120,6 +120,7 @@ function Home() {
                 // update ticker list
                 updateTickerList(queryHour)
                 lastUpdatedHour.current = currentHour
+                console.log('updated ticker list at ' + currentHour + ':00')
             }
         }, 6000)
 
