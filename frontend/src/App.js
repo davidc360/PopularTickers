@@ -34,20 +34,25 @@ function Home() {
         query: '(min-width: 1025px)'
     })
 
-    const [queryHour, setQueryHour] = useState(1)
-    function updateTickerList(hour) {
-        axios.get(ENDPOINT + 'stats?hours=' + hour).then(res => {
+    // using ref, same reason as above
+    const [queryHour, _setQueryHour] = useState(1)
+    const queryHourRef = useRef(queryHour)
+    const setQueryHour = hour => { queryHourRef.current = hour; _setQueryHour(hour)}
+
+    function updateTickerList() {
+        axios.get(ENDPOINT + 'stats?hours=' + queryHourRef.current).then(res => {
             const ticker_obj = {}
             res?.data?.forEach(ticker => {
                 ticker_obj[ticker['name']] = ticker 
             })
             setCurrentTickers(ticker_obj)
         })
+        console.log('requested tickers')
     }
 
     // update ticker list every time the query hour changes
     useEffect(() => {
-        updateTickerList(queryHour)
+        updateTickerList()
     }, [queryHour])
 
     // initialize state and listeners
@@ -118,11 +123,14 @@ function Home() {
             const currentHour = new Date().getHours()
             if (currentHour !== lastUpdatedHour.current) {
                 // update ticker list
-                updateTickerList(queryHour)
+                updateTickerList()
                 lastUpdatedHour.current = currentHour
                 console.log('updated ticker list at ' + currentHour + ':00')
             }
         }, 6000)
+
+        // update ticker list when user leaves tab and comes back
+        window.addEventListener('focus', updateTickerList)
 
         return () => {
             // turning of socket listener on unmount
@@ -130,6 +138,9 @@ function Home() {
 
             // turning off hour checker on unmount
             clearInterval(hourCheckInterval)
+
+            // turn off focus listener
+            window.removeEventListener('focus', updateTickerList)            
         }
     }, []);
 
