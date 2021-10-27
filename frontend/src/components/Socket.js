@@ -21,6 +21,7 @@ const badWords = new Set([
     'ass',
     'pussy',
     'cuck'
+    'cum'
 ])
 
 const badWordsRegexPattern = `(${[...badWords].join('|')})`
