@@ -51,7 +51,7 @@ def get_ticker_list():
 
 ticker_list = get_ticker_list()
 # write the ticker_list to file
-ticker_backup_file = open(f'all_tickers_{datetime.now().strftime("%Y_%m-%d")}.txt', 'w+')
+ticker_backup_file = open(f'all_tickers_{datetime.now().strftime("%Y_%m-%d")}.txt.temp', 'w+')
 for ticker in ticker_list:
     ticker_backup_file.write(f"{ticker}\n")
 
