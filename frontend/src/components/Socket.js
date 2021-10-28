@@ -20,7 +20,7 @@ const badWords = new Set([
     'kink',
     'ass',
     'pussy',
-    'cuck'
+    'cuck',
     'cum'
 ])
 

@@ -12,7 +12,6 @@ from flask_cors import CORS
 from flask_pymongo import PyMongo
 from flask_socketio import SocketIO, send, emit
 
-import praw
 # from tickers import ticker_list, uppercase_tickers
 from reddit import reddit, subreddits_to_monitor, get_thread_info, should_filter
 from textblob import TextBlob

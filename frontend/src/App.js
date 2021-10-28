@@ -58,7 +58,11 @@ function Home() {
     // initialize state and listeners
     useEffect(() => {
         // set up websockets
-        const socket = io(ENDPOINT);
+        const socket = io(ENDPOINT, {
+            cors: {
+              origin: '*',
+            }
+          });
         const handleNewThread = data => {
             setThreads(threads => [data, ...threads])
 
