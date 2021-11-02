@@ -195,7 +195,6 @@ def reddit_thread():
                     break
         except Exception as e:
             elog.write(f'{e}\n')
-            threading.Thread(target=reddit_thread).start()
 
 # def main():
 threading.Thread(target=reddit_thread).start()

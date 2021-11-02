@@ -39,7 +39,7 @@ export default function ({ tickers, queryHour, setQueryHour }) {
                         <th>Mentions</th>
                         <th>Strength</th>
                         <th>Positive</th>
-                        <th>Neutral</th>
+                        {/* <th>Neutral</th> */}
                         <th>Negative</th>
                     </tr>
                 </thead>
@@ -88,7 +88,7 @@ function TickerRow({ name, mentions, sentiment, positive_count, neutral_count, n
             <td>{mentions}</td>
             <td>{(sentiment*100).toFixed(2)}</td>
             <td>{Math.round((positive_count / mentions)*100)}%</td>
-            <td>{Math.round((neutral_count / mentions)*100)}%</td>
+            {/* <td>{Math.round((neutral_count / mentions)*100)}%</td> */}
             <td>{Math.round((negative_count / mentions)*100)}%</td>
             {
                     // blacklistSecret &&
