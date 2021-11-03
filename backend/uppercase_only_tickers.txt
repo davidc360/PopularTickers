@@ -3,3 +3,4 @@ WISH
 MMM
 WOOF
 SND
+RIG
