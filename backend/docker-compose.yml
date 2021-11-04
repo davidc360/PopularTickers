@@ -7,7 +7,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - SSL:${SSL_PATH}
+      - ./SSL:${SSL_PATH}
 
   mongodb:
     image: mongo:latest
