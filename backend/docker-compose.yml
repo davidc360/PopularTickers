@@ -1,4 +1,4 @@
-version: '3'
+version: "3.2"
 services:
   flask:
     build:
@@ -13,4 +13,6 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ${MONGODB_PATH}:${MONGODB_PATH}
+      - type: bind
+        source: ${MONGODB_PATH}
+        target: /data/db
