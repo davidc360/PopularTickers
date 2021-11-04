@@ -5,9 +5,14 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "6000:5000"
+      - "5000:5000"
+    links:
+      - mongodb
+
   mongodb:
-    image: mongo
+    image: mongo:latest
     container_name: mongodb
+    expose:
+      - 27017
     ports:
-      - "27018:27017"
+      - 27017:27017

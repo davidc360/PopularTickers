@@ -10,4 +10,4 @@ RUN pipenv install --system --deploy
 
 EXPOSE 5000
 
-CMD ["pipenv", "run", "flask", "run"]
+CMD ["pipenv", "run", "flask", "run", "--host=0.0.0.0", "--port=5000"]
