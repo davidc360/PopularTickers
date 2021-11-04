@@ -9,3 +9,4 @@ frontend/node_modules
 */*.temp
 */__pycache__
 */letsencrypt
+.DS_STORE
