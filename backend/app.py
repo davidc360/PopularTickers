@@ -39,6 +39,9 @@ SSL_context = None if SSL_fullchain_path is None or SSL_privatekey_path is None 
 # @app.route('/tickerlist_uppercase')
 # def tickerlist_uppercase():
 #     return json.dumps(list(uppercase_tickers))
+@app.route('/')
+def home():
+    return 'Hello World!'
 
 @app.route('/stats')
 def returnStats():
