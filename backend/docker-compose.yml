@@ -13,4 +13,4 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - /mongo/data:${MONGODB_PATH}
+      - ${MONGODB_PATH}:${MONGODB_PATH}
