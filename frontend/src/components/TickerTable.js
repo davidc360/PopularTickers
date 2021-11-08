@@ -35,7 +35,7 @@ export default function ({ tickers, queryHour, setQueryHour, isLoadingData }) {
     const loadingDotsInterval = useRef()
     useEffect(() => {
         if(isLoadingData) {
-            let length = 0
+            let length = 1
             loadingDotsInterval.current = setInterval(() => {
                 length = (length + 1) % 4
                 setLoadingText('Loading data' + '.'.repeat(length+1))
