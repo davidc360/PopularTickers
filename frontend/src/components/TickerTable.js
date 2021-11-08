@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
 import "./TickerTable.sass"
 
 // tickers: sorted by mentions in App.js
-export default function ({ tickers, queryHour, setQueryHour }) {
+export default function ({ tickers, queryHour, setQueryHour, isLoadingData }) {
     const isWide = useMediaQuery({
         query: '(min-width: 1025px)'
     })
@@ -20,6 +20,34 @@ export default function ({ tickers, queryHour, setQueryHour }) {
 
     if(!isWide && tickerRows.length > 20) tickerRows.length = 20
     // console.log('ticker rows: ', tickerRows)
+
+    // if there are ticker rows, display a message
+    if (tickerRows.length === 0) tickerRows.push(
+        <tr>
+            <td colSpan="6">
+                <br />
+                Not data in this time frame yet.
+            </td>
+        </tr>
+    )
+
+    const [loadingText, setLoadingText] = useState("")
+    const loadingDotsInterval = useRef()
+    useEffect(() => {
+        if(isLoadingData) {
+            let length = 0
+            function incrementDot() {
+                length = (length + 1) % 4
+                setLoadingText('Loading data' + '.'.repeat(length+1))
+            }
+            incrementDot()
+            loadingDotsInterval.current = setInterval(() => {
+               incrementDot()
+            }, 400)
+        } else {
+            clearInterval(loadingDotsInterval.current)
+        }
+    }, [isLoadingData])
 
     return (
         <div className="stats">
@@ -43,20 +71,17 @@ export default function ({ tickers, queryHour, setQueryHour }) {
                         <th>Negative</th>
                     </tr>
                 </thead>
-                { tickerRows.length === 0 ? (
-                    <tbody>
+                <tbody>
+                    {isLoadingData ? (
                         <tr>
                             <td colSpan="6">
                                 <br />
-                                Not data in this time frame yet.
+                                {loadingText}
                             </td>
                         </tr>
-                    </tbody>
-                ) : (
-                    <tbody>
-                        { tickerRows }
-                    </tbody>
-                )}
+                    ) : (tickerRows)}
+                </tbody>
+                      
             </table>
         </div>
     )    

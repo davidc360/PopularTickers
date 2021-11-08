@@ -39,15 +39,19 @@ function Home() {
     const queryHourRef = useRef(queryHour)
     const setQueryHour = hour => { queryHourRef.current = hour; _setQueryHour(hour)}
 
+    const [isLoadingTickers, setIsLoadingTickers] = useState(false)
     function updateTickerList() {
-        axios.get(ENDPOINT + 'stats?hours=' + queryHourRef.current).then(res => {
-            const ticker_obj = {}
-            res?.data?.forEach(ticker => {
-                ticker_obj[ticker['name']] = ticker 
+        setIsLoadingTickers(true)
+        axios.get(ENDPOINT + 'stats?hours=' + queryHourRef.current)
+            .then(res => {
+                setIsLoadingTickers(false)
+                const ticker_obj = {}
+                res?.data?.forEach(ticker => {
+                    ticker_obj[ticker['name']] = ticker 
+                })
+                setCurrentTickers(ticker_obj)
             })
-            setCurrentTickers(ticker_obj)
-        })
-        console.log('requested tickers')
+        // console.log('requested tickers')
     }
 
     // update ticker list every time the query hour changes
@@ -163,7 +167,7 @@ function Home() {
 
     return (
         <div className={isWide ? 'main' : 'main-small'}>
-            <TickerTable tickers={sortedTickers} setQueryHour={setQueryHour} queryHour={queryHour}/>
+            <TickerTable tickers={sortedTickers} setQueryHour={setQueryHour} queryHour={queryHour} isLoadingData={isLoadingTickers}/>
             <Socket threads={ threads }/>
         </div>
     )
