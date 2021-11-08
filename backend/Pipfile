@@ -16,6 +16,7 @@ flask-cors = "*"
 python-dotenv = "*"
 flask-socketio = "*"
 requests = "*"
+flask-caching = "*"
 
 [requires]
 python_version = "3.8"
