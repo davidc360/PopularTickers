@@ -45,8 +45,10 @@ function Home() {
         axios.get(ENDPOINT + 'stats?hours=' + queryHourRef.current)
             .then(res => {
                 setIsLoadingTickers(false)
+                if (!res.data) return
+                
                 const ticker_obj = {}
-                res?.data?.forEach(ticker => {
+                res.data?.forEach(ticker => {
                     ticker_obj[ticker['name']] = ticker 
                 })
                 setCurrentTickers(ticker_obj)
@@ -138,7 +140,7 @@ function Home() {
         }, 6000)
 
         // update ticker list when user leaves tab and comes back
-        window.addEventListener('focus', updateTickerList)
+        // window.addEventListener('focus', updateTickerList)
 
         return () => {
             // turning of socket listener on unmount
@@ -148,7 +150,7 @@ function Home() {
             clearInterval(hourCheckInterval)
 
             // turn off focus listener
-            window.removeEventListener('focus', updateTickerList)            
+            // window.removeEventListener('focus', updateTickerList)            
         }
     }, []);
 
