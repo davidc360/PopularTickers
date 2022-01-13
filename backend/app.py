@@ -93,7 +93,7 @@ def returnStats():
 
     if hours_to_query == 0:
         document = mongo.db.tickers.find_one(
-            { 'time': { '$gte': current_time_str} }
+            { 'time': { '$gte': get_current_time()} }
         )
         # return tickers in the found document, or none
         return json.dumps(document.get('tickers', None), default=str)
